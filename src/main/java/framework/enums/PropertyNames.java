@@ -5,32 +5,43 @@ import framework.utils.ValidationUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This enum is designed to represent string constants that correspond with keys in property file
+ */
 @Getter
 @RequiredArgsConstructor
 public enum PropertyNames {
 
     APPLICATION_NAME("application.name"),
-    APPLICATION_AUTHOR("application.name"),
-    OPTION_PREFIX("option"),
-    OPTION_SUFFIX_NAME("name"),
-    OPTION_SUFFIX_ARITY("arity"),
-    OPTION_SUFFIX_DESCRIPTION("description"),
-    OPTION_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message");
+    APPLICATION_AUTHOR("application.author"),
+    COMMAND_PREFIX("command"),
+    COMMAND_SUFFIX_NAME("name"),
+    COMMAND_SUFFIX_ARITY("arity"),
+    COMMAND_SUFFIX_DESCRIPTION("description"),
+    COMMAND_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message");
 
     private final String name;
 
-    public static String extractOptionName(String key) throws LaboratoryFrameworkException {
+    /**
+     * Method designed to extract command name from key
+     *
+     * @param key - key in property in format: {@link PropertyNames#COMMAND_PREFIX#name}.command_name.some-suffix.
+     *            command_name must not be empty string or whitespace
+     * @return command_name
+     * @throws LaboratoryFrameworkException if Key does not correspond with described above format
+     */
+    public static String extractCommandName(String key) throws LaboratoryFrameworkException {
         ValidationUtils.requireNotEmpty(key, "Key is not specified");
-        if (!key.startsWith(OPTION_PREFIX.name) || key.length() < OPTION_PREFIX.name.length() + 1) {
-            throw new LaboratoryFrameworkException(String.format("Supplied key %s is not an option", key));
+        if (!key.startsWith(COMMAND_PREFIX.name) || key.length() < COMMAND_PREFIX.name.length() + 1) {
+            throw new LaboratoryFrameworkException(String.format("Supplied key %s is not a command", key));
         }
-        String withoutPrefix = key.substring(OPTION_PREFIX.name.length() + 1);
+        String withoutPrefix = key.substring(COMMAND_PREFIX.name.length() + 1);
         int dotIndex = withoutPrefix.indexOf('.');
-        if(dotIndex == -1) {
-            throw new LaboratoryFrameworkException(String.format("Invalid option: %s", key));
+        if (dotIndex == -1) {
+            throw new LaboratoryFrameworkException(String.format("Invalid command: %s", key));
         }
         String result = withoutPrefix.substring(0, dotIndex);
-        ValidationUtils.requireNotEmpty(result, "Option name must not be empty");
+        ValidationUtils.requireNotEmpty(result, "Command name must not be empty");
         return result;
     }
 

@@ -2,8 +2,8 @@ package framework.application.manual;
 
 import framework.enums.PropertyNames;
 import framework.exception.LaboratoryFrameworkException;
-import framework.option.OptionHolder;
-import framework.option.dto.OptionDto;
+import framework.command.CommandDtoHolder;
+import framework.command.dto.CommandDto;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
 
@@ -14,18 +14,18 @@ public class ApplicationManualPrinter {
 
     private final String manual;
 
-    public ApplicationManualPrinter(Properties applicationProperties, OptionHolder optionHolder) {
-        this.manual = buildManual(applicationProperties, optionHolder);
+    public ApplicationManualPrinter(Properties applicationProperties, CommandDtoHolder commandDtoHolder) {
+        this.manual = buildManual(applicationProperties, commandDtoHolder);
     }
 
     public void printManual() {
         ConsoleUtils.print(this.manual);
     }
 
-    private String buildManual(Properties applicationProperties, OptionHolder optionHolder) {
+    private String buildManual(Properties applicationProperties, CommandDtoHolder commandDtoHolder) {
         StringBuilder stringBuilder = new StringBuilder();
         appendApplicationPart(stringBuilder, applicationProperties);
-        appendOptionsPart(stringBuilder, optionHolder);
+        appendCommandsPart(stringBuilder, commandDtoHolder);
         return stringBuilder.toString();
     }
 
@@ -46,15 +46,12 @@ public class ApplicationManualPrinter {
     }
 
     /**
-     * Appends 'options' part and adds line separator character to the end
-     *
-     * @throws LaboratoryFrameworkException if any parameter in properties is null or empty
+     * Appends 'commands' part and adds line separator character to the end
      */
-    private void appendOptionsPart(StringBuilder destination, OptionHolder optionHolder)
-            throws LaboratoryFrameworkException {
-        Map<String, OptionDto> options = optionHolder.getOptionDtos();
-        destination.append(String.format("Options:%n"));
-        options.forEach((k, v) -> {
+    private void appendCommandsPart(StringBuilder destination, CommandDtoHolder commandDtoHolder) {
+        Map<String, CommandDto> commands = commandDtoHolder.getCommandDtos();
+        destination.append(String.format("Commands:%n"));
+        commands.forEach((k, v) -> {
             destination.append(String.format("* %s:%n", k));
             destination.append(String.format("\tDescription: %s%n", v.getDescription()));
             destination.append(String.format("\tArity: %s%n", v.getArity()));

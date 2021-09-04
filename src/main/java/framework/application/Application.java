@@ -2,7 +2,7 @@ package framework.application;
 
 import framework.application.manual.ApplicationManualPrinter;
 import framework.exception.LaboratoryFrameworkException;
-import framework.option.OptionHolder;
+import framework.command.CommandDtoHolder;
 import framework.utils.PropertyUtils;
 
 import java.util.Objects;
@@ -11,7 +11,7 @@ import java.util.Properties;
 public class Application {
 
     private final Properties applicationProperties;
-    private final OptionHolder optionHolder;
+    private final CommandDtoHolder commandDtoHolder;
     private final ApplicationManualPrinter manualPrinter;
 
     /**
@@ -20,8 +20,8 @@ public class Application {
      */
     public Application(String propertiesPath) throws LaboratoryFrameworkException {
         this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
-        this.optionHolder = new OptionHolder(applicationProperties);
-        this.manualPrinter = new ApplicationManualPrinter(applicationProperties, optionHolder);
+        this.commandDtoHolder = new CommandDtoHolder(applicationProperties);
+        this.manualPrinter = new ApplicationManualPrinter(applicationProperties, commandDtoHolder);
     }
 
     public void executeCommand(String option) {

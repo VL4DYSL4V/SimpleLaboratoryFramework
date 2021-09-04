@@ -1,4 +1,4 @@
-package framework.option.dto;
+package framework.command.dto;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import javax.annotation.concurrent.Immutable;
 
 @Immutable
 @Data
-public class OptionDto {
+public class CommandDto {
 
     private final String name;
 

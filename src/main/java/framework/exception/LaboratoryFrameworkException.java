@@ -1,5 +1,8 @@
 package framework.exception;
 
+/**
+ * Class is a superclass for all exception that will be thrown intentionally in this framework
+ */
 public class LaboratoryFrameworkException extends RuntimeException {
 
     public LaboratoryFrameworkException() {
