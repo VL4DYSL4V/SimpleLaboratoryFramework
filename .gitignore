@@ -1,0 +1,6 @@
+*.properties
+*.idea
+*.iml
+*META-INF
+*.MF
+*out
