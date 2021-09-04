@@ -49,7 +49,24 @@ public final class ValidationUtils {
      * @throws LaboratoryFrameworkException if given parameter is less than zero with supplied message
      */
     public static void requireGreaterOrEqualThanZero(int i, String message) throws LaboratoryFrameworkException {
-        if (i < 0) {
+        requireGreaterOrEqualThan(i, 0, message);
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is less than numberToCompare with supplied message
+     */
+    public static void requireGreaterOrEqualThan(int i, int numberToCompare, String message) throws LaboratoryFrameworkException {
+        if (i < numberToCompare) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is less than lowerBound or greater than upperBound
+     *                                      with supplied message
+     */
+    public static void requireBetweenClosed(int i, int lowerBound, int upperBound, String message) throws LaboratoryFrameworkException {
+        if (i < lowerBound || i > upperBound) {
             throw new LaboratoryFrameworkException(message);
         }
     }

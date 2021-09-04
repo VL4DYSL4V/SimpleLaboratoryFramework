@@ -30,6 +30,14 @@ public final class CommandDtoHolder {
         this.commandDtos = fromCommandNameToListOfKeysForIt(commandNameToListOfKeysForIt, applicationProperties);
     }
 
+    public boolean exists(String commandName) {
+        return commandDtos.containsKey(commandName);
+    }
+
+    public CommandDto getCommandDto(String commandName) {
+        return commandDtos.get(commandName);
+    }
+
     /**
      * Method builds map of command name to command dto. It returns unmodifiable and threadsafe map
      */

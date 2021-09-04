@@ -1,4 +1,4 @@
-package framework.application.manual;
+package framework.application.info;
 
 import framework.command.CommandDtoHolder;
 import framework.command.dto.CommandDto;
@@ -24,11 +24,11 @@ public class ApplicationInfoPrinter {
     }
 
     public void printManual() {
-        ConsoleUtils.print(this.manual);
+        ConsoleUtils.println(this.manual);
     }
 
     public void printGreeting() {
-        ConsoleUtils.print(this.greeting);
+        ConsoleUtils.println(this.greeting);
     }
 
     private String buildGreeting(Properties applicationProperties) {
