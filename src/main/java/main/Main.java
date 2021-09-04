@@ -1,14 +1,14 @@
 package main;
 
-import framework.utils.PropertyUtils;
-
-import java.util.Properties;
+import framework.application.Application;
 
 public class Main {
 
+    private static final String PATH_TO_PROPERTIES = "/laboratory-framework.properties";
+
     public static void main(String[] args) {
-        final Properties properties = PropertyUtils.readFromFile("/laboratory-framework.properties");
-        properties.entrySet().forEach(System.out::println);
+        Application application = new Application(PATH_TO_PROPERTIES);
+        application.executeCommand("help");
     }
 
 }

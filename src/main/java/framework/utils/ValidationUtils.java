@@ -35,4 +35,23 @@ public final class ValidationUtils {
         }
     }
 
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is null or empty with supplied message
+     */
+    public static void requireNotEmpty(String s, String message) throws LaboratoryFrameworkException {
+        requireNonNull(s, message);
+        if (s.isEmpty()) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is less than zero with supplied message
+     */
+    public static void requireGreaterOrEqualThanZero(int i, String message) throws LaboratoryFrameworkException {
+        if (i < 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
 }

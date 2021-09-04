@@ -23,7 +23,7 @@ public final class PropertyUtils {
      *                                      </ul>
      */
     public static Properties readFromFile(String pathInResources) throws LaboratoryFrameworkException {
-        ValidationUtils.requireNotEmpty(pathInResources);
+        ValidationUtils.requireNotEmpty(pathInResources, "Path to property file is not specified");
         if (!pathInResources.startsWith(File.separator)) {
             pathInResources = File.separator.concat(pathInResources);
         }
