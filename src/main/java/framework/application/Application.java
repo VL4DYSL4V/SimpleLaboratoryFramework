@@ -1,9 +1,10 @@
 package framework.application;
 
 import framework.application.manual.ApplicationInfoPrinter;
-import framework.exception.LaboratoryFrameworkException;
 import framework.command.CommandDtoHolder;
+import framework.exception.LaboratoryFrameworkException;
 import framework.utils.PropertyUtils;
+import framework.variable.VariableDtoHolder;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import java.util.Properties;
 public class Application {
 
     private final Properties applicationProperties;
+    private final VariableDtoHolder variableDtoHolder;
     private final CommandDtoHolder commandDtoHolder;
     private final ApplicationInfoPrinter infoPrinter;
 
@@ -20,12 +22,13 @@ public class Application {
      */
     public Application(String propertiesPath) throws LaboratoryFrameworkException {
         this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
+        this.variableDtoHolder = new VariableDtoHolder(applicationProperties);
         this.commandDtoHolder = new CommandDtoHolder(applicationProperties);
-        this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandDtoHolder);
+        this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandDtoHolder, variableDtoHolder);
     }
 
     public void executeCommand(String command) {
-        if (Objects.equals(command, "help")){
+        if (Objects.equals(command, "help")) {
             infoPrinter.printManual();
         } else if (Objects.equals(command, "greeting")) {
             infoPrinter.printGreeting();

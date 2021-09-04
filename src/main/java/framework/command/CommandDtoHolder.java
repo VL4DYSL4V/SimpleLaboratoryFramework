@@ -1,8 +1,8 @@
 package framework.command;
 
-import framework.enums.PropertyNames;
-import framework.exception.LaboratoryFrameworkException;
 import framework.command.dto.CommandDto;
+import framework.enums.PropertyName;
+import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ValidationUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -25,8 +25,8 @@ public final class CommandDtoHolder {
         Map<String, List<String>> commandNameToListOfKeysForIt =
                 applicationProperties.stringPropertyNames()
                         .stream()
-                        .filter(key -> key.startsWith(PropertyNames.COMMAND_PREFIX.getName()))
-                        .collect(Collectors.groupingBy(PropertyNames::extractCommandName));
+                        .filter(key -> key.startsWith(PropertyName.COMMAND_PREFIX.getName()))
+                        .collect(Collectors.groupingBy(PropertyName::extractCommandName));
         this.commandDtos = fromCommandNameToListOfKeysForIt(commandNameToListOfKeysForIt, applicationProperties);
     }
 
@@ -37,10 +37,10 @@ public final class CommandDtoHolder {
             Map<String, List<String>> commandNameToListOfKeysForIt,
             Properties applicationProperties) {
         Map<String, MutableCommandDto> container = new HashMap<>();
-        for (String optionName : commandNameToListOfKeysForIt.keySet()) {
+        for (String commandName : commandNameToListOfKeysForIt.keySet()) {
             MutableCommandDto dto = new MutableCommandDto();
-            container.putIfAbsent(optionName, dto);
-            for (String commandKey : commandNameToListOfKeysForIt.get(optionName)) {
+            container.putIfAbsent(commandName, dto);
+            for (String commandKey : commandNameToListOfKeysForIt.get(commandName)) {
                 String value = applicationProperties.getProperty(commandKey);
                 setParamToMutableDto(dto, commandKey, value);
             }
@@ -69,17 +69,17 @@ public final class CommandDtoHolder {
      */
     private void setParamToMutableDto(MutableCommandDto dto, String commandKey, String value)
             throws LaboratoryFrameworkException {
-        if (commandKey.endsWith(PropertyNames.COMMAND_SUFFIX_NAME.getName())) {
+        if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_NAME.getName())) {
             ValidationUtils.requireNotEmpty(value, "Name must be specified");
             dto.setName(value);
-        } else if (commandKey.endsWith(PropertyNames.COMMAND_SUFFIX_ARITY.getName())) {
+        } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_ARITY.getName())) {
             int arity = Integer.parseInt(value);
             ValidationUtils.requireGreaterOrEqualThanZero(arity, "Arity must be >= 0");
             dto.setArity(Integer.parseInt(value));
-        } else if (commandKey.endsWith(PropertyNames.COMMAND_SUFFIX_DESCRIPTION.getName())) {
+        } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_DESCRIPTION.getName())) {
             ValidationUtils.requireNotEmpty(value, "Description must be provided");
             dto.setDescription(value);
-        } else if (commandKey.endsWith(PropertyNames.COMMAND_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE.getName())) {
+        } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE.getName())) {
             dto.setConstraintViolationMessage(value);
         } else {
             throw new LaboratoryFrameworkException(String.format("Unknown key: %s", commandKey));
