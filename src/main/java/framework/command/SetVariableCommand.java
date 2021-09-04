@@ -3,17 +3,21 @@ package framework.command;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
+import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
-import framework.variable.VariableDtoHolder;
+import framework.variable.holder.VariableDtoHolder;
 import framework.variable.dto.VariableDto;
+import framework.variable.holder.VariableHolderAware;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @RequiredArgsConstructor
-public class SetVariableCommand implements Command {
+public class SetVariableCommand implements Command, VariableHolderAware, ApplicationStateAware {
 
-    private final VariableDtoHolder variableDtoHolder;
+    private VariableDtoHolder variableHolder;
 
-    private final ApplicationState applicationState;
+    private ApplicationState applicationState;
 
     @Override
     public void execute(String[] args) {
@@ -22,7 +26,7 @@ public class SetVariableCommand implements Command {
             return;
         }
         String variableName = args[0];
-        VariableDto variableDto = variableDtoHolder.getVariableDto(variableName);
+        VariableDto variableDto = variableHolder.getVariableDto(variableName);
         if (variableDto == null) {
             ConsoleUtils.println("Unknown variable");
             return;
@@ -39,4 +43,5 @@ public class SetVariableCommand implements Command {
                 throw new LaboratoryFrameworkException(String.format("Unsupported type: %s", type));
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package framework.variable;
+package framework.variable.holder;
 
 import framework.enums.PropertyName;
 import framework.enums.VariableType;

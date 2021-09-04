@@ -1,17 +1,20 @@
 package framework.application.info;
 
-import framework.command.CommandDtoHolder;
+import framework.command.holder.CommandDtoHolder;
 import framework.command.dto.CommandDto;
 import framework.enums.PropertyName;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
-import framework.variable.VariableDtoHolder;
+import framework.variable.holder.VariableDtoHolder;
 import framework.variable.dto.VariableDto;
 
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Class is created to build and print greeting and manual
+ */
 public class ApplicationInfoPrinter {
 
     private final String greeting;

@@ -1,4 +1,4 @@
-package framework.command;
+package framework.command.holder;
 
 import framework.command.dto.CommandDto;
 import framework.enums.PropertyName;
