@@ -8,6 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         Application application = new Application(PATH_TO_PROPERTIES);
+        application.executeCommand("greeting");
         application.executeCommand("help");
     }
 

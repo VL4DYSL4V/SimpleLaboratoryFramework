@@ -1,6 +1,6 @@
 package framework.application;
 
-import framework.application.manual.ApplicationManualPrinter;
+import framework.application.manual.ApplicationInfoPrinter;
 import framework.exception.LaboratoryFrameworkException;
 import framework.command.CommandDtoHolder;
 import framework.utils.PropertyUtils;
@@ -12,7 +12,7 @@ public class Application {
 
     private final Properties applicationProperties;
     private final CommandDtoHolder commandDtoHolder;
-    private final ApplicationManualPrinter manualPrinter;
+    private final ApplicationInfoPrinter infoPrinter;
 
     /**
      * @param propertiesPath - Path in classpath resources to .properties configuration file
@@ -21,12 +21,14 @@ public class Application {
     public Application(String propertiesPath) throws LaboratoryFrameworkException {
         this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
         this.commandDtoHolder = new CommandDtoHolder(applicationProperties);
-        this.manualPrinter = new ApplicationManualPrinter(applicationProperties, commandDtoHolder);
+        this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandDtoHolder);
     }
 
-    public void executeCommand(String option) {
-        if (Objects.equals(option, "help")){
-            manualPrinter.printManual();
+    public void executeCommand(String command) {
+        if (Objects.equals(command, "help")){
+            infoPrinter.printManual();
+        } else if (Objects.equals(command, "greeting")) {
+            infoPrinter.printGreeting();
         }
     }
 

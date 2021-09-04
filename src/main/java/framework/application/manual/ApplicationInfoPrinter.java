@@ -10,21 +10,32 @@ import framework.utils.ValidationUtils;
 import java.util.Map;
 import java.util.Properties;
 
-public class ApplicationManualPrinter {
+public class ApplicationInfoPrinter {
+
+    private final String greeting;
 
     private final String manual;
 
-    public ApplicationManualPrinter(Properties applicationProperties, CommandDtoHolder commandDtoHolder) {
-        this.manual = buildManual(applicationProperties, commandDtoHolder);
+    public ApplicationInfoPrinter(Properties applicationProperties, CommandDtoHolder commandDtoHolder) {
+        this.greeting = buildGreeting(applicationProperties);
+        this.manual = buildManual(commandDtoHolder);
     }
 
     public void printManual() {
         ConsoleUtils.print(this.manual);
     }
 
-    private String buildManual(Properties applicationProperties, CommandDtoHolder commandDtoHolder) {
+    public void printGreeting() {ConsoleUtils.print(this.greeting);}
+
+    private String buildGreeting(Properties applicationProperties) {
         StringBuilder stringBuilder = new StringBuilder();
         appendApplicationPart(stringBuilder, applicationProperties);
+        return stringBuilder.toString();
+    }
+
+
+    private String buildManual(CommandDtoHolder commandDtoHolder) {
+        StringBuilder stringBuilder = new StringBuilder();
         appendCommandsPart(stringBuilder, commandDtoHolder);
         return stringBuilder.toString();
     }
