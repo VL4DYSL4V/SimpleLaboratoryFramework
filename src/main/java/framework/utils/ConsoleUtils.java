@@ -2,6 +2,7 @@ package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public final class ConsoleUtils {
@@ -33,4 +34,17 @@ public final class ConsoleUtils {
         return new Scanner(System.in).nextLine();
     }
 
+    public static BigDecimal askForBigDecimalRepeatedly() {
+        println("Input a number");
+        BigDecimal out = null;
+        while (out == null) {
+            String nextLine = readLine();
+            try {
+                out = new BigDecimal(nextLine);
+            } catch (Exception e) {
+                println("Invalid number format. Try again");
+            }
+        }
+        return out;
+    }
 }

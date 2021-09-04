@@ -8,7 +8,7 @@ public class HelpCommand implements Command {
 
     private final ApplicationInfoPrinter infoPrinter;
 
-    public void execute() {
+    public void execute(String[] args) {
         infoPrinter.printManual();
     }
 

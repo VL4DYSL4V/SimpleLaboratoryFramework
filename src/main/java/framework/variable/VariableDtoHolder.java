@@ -28,8 +28,8 @@ public class VariableDtoHolder {
         this.variableDtos = fromVariableNameToListOfKeysForIt(variableNameToListOfKeysForIt, applicationProperties);
     }
 
-    public boolean exists(String variableName) {
-        return variableDtos.containsKey(variableName);
+    public VariableDto getVariableDto(String variableName) {
+        return variableDtos.get(variableName);
     }
 
     /**

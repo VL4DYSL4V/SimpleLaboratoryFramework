@@ -9,7 +9,8 @@ public class GreetingCommand implements Command {
     private final ApplicationInfoPrinter infoPrinter;
 
     @Override
-    public void execute() {
+    public void execute(String[] args) {
         infoPrinter.printGreeting();
     }
+
 }
