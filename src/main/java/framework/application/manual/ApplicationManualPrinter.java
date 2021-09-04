@@ -43,6 +43,10 @@ public class ApplicationManualPrinter {
         String applicationAuthor = applicationProperties.getProperty(PropertyNames.APPLICATION_AUTHOR.getName());
         ValidationUtils.requireNotEmpty(applicationAuthor, "Application author is not specified");
         destination.append(String.format("Application author: %s%n", applicationAuthor));
+
+        String applicationDescription = applicationProperties.getProperty(PropertyNames.APPLICATION_DESCRIPTION.getName());
+        ValidationUtils.requireNotEmpty(applicationDescription, "Application description is not specified");
+        destination.append(String.format("Application description: %s%n", applicationDescription));
     }
 
     /**

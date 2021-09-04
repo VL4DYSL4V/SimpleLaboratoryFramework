@@ -14,6 +14,7 @@ public enum PropertyNames {
 
     APPLICATION_NAME("application.name"),
     APPLICATION_AUTHOR("application.author"),
+    APPLICATION_DESCRIPTION("application.description"),
     COMMAND_PREFIX("command"),
     COMMAND_SUFFIX_NAME("name"),
     COMMAND_SUFFIX_ARITY("arity"),
