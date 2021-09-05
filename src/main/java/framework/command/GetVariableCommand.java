@@ -32,7 +32,7 @@ public class GetVariableCommand implements RunnableCommand, ApplicationStateAwar
             return;
         }
         String variableName = args[0];
-        Variable variable = variableHolder.getVariableDto(variableName);
+        Variable variable = variableHolder.getVariable(variableName);
         if (variable == null) {
             ConsoleUtils.println("Unknown variable");
             return;

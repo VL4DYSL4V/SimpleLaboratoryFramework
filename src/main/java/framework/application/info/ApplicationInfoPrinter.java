@@ -73,7 +73,7 @@ public class ApplicationInfoPrinter {
      * Appends 'variables' part and adds line separator character to the end
      */
     private void appendVariablesPart(StringBuilder destination, VariableHolder variableHolder) {
-        Map<String, Variable> variables = variableHolder.getVariableDtos();
+        Map<String, Variable> variables = variableHolder.getVariables();
         destination.append(String.format("Variables:%n"));
         variables.values().stream()
                 .sorted(Comparator.comparing(Variable::getName))

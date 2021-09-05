@@ -38,6 +38,11 @@ public final class ConsoleUtils {
         return new Scanner(System.in).nextLine();
     }
 
+    public static String askForStringRepeatedly() {
+        return askForObjectRepeatedly("Input a string (Not empty)", Function.identity(),
+                "Invalid string. Try again");
+    }
+
     public static BigDecimal askForBigDecimalRepeatedly() {
         return askForObjectRepeatedly("Input a number (BigDecimal)", BigDecimal::new,
                 "Invalid number format. Try again");

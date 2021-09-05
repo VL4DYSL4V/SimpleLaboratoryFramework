@@ -9,6 +9,8 @@ import framework.state.ApplicationState;
 import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
+import framework.variable.entity.MatrixVariable;
+import framework.variable.entity.VectorVariable;
 import framework.variable.holder.VariableHolder;
 import framework.variable.entity.Variable;
 import framework.variable.holder.VariableHolderAware;
@@ -44,17 +46,39 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
             return;
         }
         String variableName = args[0];
-        Variable variable = variableHolder.getVariableDto(variableName);
+        Variable variable = variableHolder.getVariable(variableName);
         if (variable == null) {
             ConsoleUtils.println("Unknown variable");
             return;
         }
-        Object result = variableTypeToValueSupplierMap.get(variable.getType()).get();
+        Object result = getValueForValue(variable);
         applicationState.setVariable(variableName, result);
     }
 
+    private Object getValueForValue(Variable variable) {
+        switch (variable.getType()) {
+            case VECTOR:
+                VectorVariable vectorVariable = (VectorVariable) variable;
+                return ConsoleUtils.askForVectorRepeatedly(vectorVariable.getLength());
+            case MATRIX:
+                MatrixVariable matrixVariable = (MatrixVariable) variable;
+                return ConsoleUtils.askForMatrixRepeatedly(matrixVariable.getRowCount(), matrixVariable.getColumnCount());
+        }
+        return variableTypeToValueSupplierMap.get(variable.getType()).get();
+    }
+
     private void setValueSuppliers() {
+        variableTypeToValueSupplierMap.put(VariableType.STRING, ConsoleUtils::askForStringRepeatedly);
         variableTypeToValueSupplierMap.put(VariableType.BIG_DECIMAL, ConsoleUtils::askForBigDecimalRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.BIG_INTEGER, ConsoleUtils::askForBigBigIntegerRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.BYTE, ConsoleUtils::askForByteRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.SHORT, ConsoleUtils::askForShortRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.INTEGER, ConsoleUtils::askForIntegerRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.LONG, ConsoleUtils::askForLongRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.BOOLEAN, ConsoleUtils::askForBooleanRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.CHARACTER, ConsoleUtils::askForCharacterRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.FLOAT, ConsoleUtils::askForFloatRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.DOUBLE, ConsoleUtils::askForDoubleRepeatedly);
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {
