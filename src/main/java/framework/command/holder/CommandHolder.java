@@ -78,7 +78,7 @@ public final class CommandHolder {
             dto.setName(value);
         } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_ARITY.getName())) {
             int arity = Integer.parseInt(value);
-            ValidationUtils.requireGreaterOrEqualThanZero(arity, "Arity must be >= 0");
+            ValidationUtils.requireGreaterOrEqualThan(arity, 0, "Arity must be >= 0");
             dto.setArity(Integer.parseInt(value));
         } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_DESCRIPTION.getName())) {
             ValidationUtils.requireNotEmpty(value, "Description must be provided");

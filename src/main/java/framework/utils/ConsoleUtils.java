@@ -35,7 +35,7 @@ public final class ConsoleUtils {
     }
 
     public static BigDecimal askForBigDecimalRepeatedly() {
-        println("Input a number");
+        println("Input a number (BigDecimal)");
         BigDecimal out = null;
         while (out == null) {
             String nextLine = readLine();

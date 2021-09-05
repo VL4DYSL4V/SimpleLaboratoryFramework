@@ -46,17 +46,11 @@ public final class ValidationUtils {
     }
 
     /**
-     * @throws LaboratoryFrameworkException if given parameter is less than zero with supplied message
-     */
-    public static void requireGreaterOrEqualThanZero(int i, String message) throws LaboratoryFrameworkException {
-        requireGreaterOrEqualThan(i, 0, message);
-    }
-
-    /**
      * @throws LaboratoryFrameworkException if given parameter is less than numberToCompare with supplied message
      */
-    public static void requireGreaterOrEqualThan(int i, int numberToCompare, String message) throws LaboratoryFrameworkException {
-        if (i < numberToCompare) {
+    public static <T extends Number & Comparable<T>> void requireGreaterOrEqualThan(T obj, T numberToCompare, String message)
+            throws LaboratoryFrameworkException {
+        if (obj.compareTo(numberToCompare) < 0) {
             throw new LaboratoryFrameworkException(message);
         }
     }
@@ -65,10 +59,55 @@ public final class ValidationUtils {
      * @throws LaboratoryFrameworkException if given parameter is less than lowerBound or greater than upperBound
      *                                      with supplied message
      */
-    public static void requireBetweenClosed(int i, int lowerBound, int upperBound, String message) throws LaboratoryFrameworkException {
-        if (i < lowerBound || i > upperBound) {
+    public static <T extends Number & Comparable<T>> void requireBetweenClosed(T obj, T lowerBound, T upperBound, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(lowerBound);
+        requireNonNull(upperBound);
+        if (obj.compareTo(lowerBound) < 0 || obj.compareTo(upperBound) > 0) {
             throw new LaboratoryFrameworkException(message);
         }
     }
 
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is <= lowerBound or >= upperBound
+     *                                      with supplied message
+     */
+    public static <T extends Number & Comparable<T>> void requireBetweenOpen(T obj, T lowerBound, T upperBound, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(lowerBound);
+        requireNonNull(upperBound);
+        if (obj.compareTo(lowerBound) <= 0 || obj.compareTo(upperBound) >= 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is <= lowerBound or > upperBound
+     *                                      with supplied message
+     */
+    public static <T extends Number & Comparable<T>> void requireBetweenHalfOpen(T obj, T lowerBound, T upperBound, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(lowerBound);
+        requireNonNull(upperBound);
+        if (obj.compareTo(lowerBound) <= 0 || obj.compareTo(upperBound) > 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is < lowerBound or >= upperBound
+     *                                      with supplied message
+     */
+    public static <T extends Number & Comparable<T>> void requireBetweenHalfClosed(T obj, T lowerBound, T upperBound, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(lowerBound);
+        requireNonNull(upperBound);
+        if (obj.compareTo(lowerBound) < 0 || obj.compareTo(upperBound) >= 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
 }
