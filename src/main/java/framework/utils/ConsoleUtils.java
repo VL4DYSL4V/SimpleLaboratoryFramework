@@ -1,6 +1,7 @@
 package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 
 import java.math.BigDecimal;
@@ -93,8 +94,21 @@ public final class ConsoleUtils {
 
     public static ArrayRealVector askForVectorRepeatedly(int vectorLength) {
         ValidationUtils.requireGreaterOrEqualThan(vectorLength, 1, String.format("Vector length must be >= %d", 1));
+        println(String.format("Input vector with length: %d", vectorLength));
         double[] values = askForDoubleArrayRepeatedly(vectorLength);
         return new ArrayRealVector(values);
+    }
+
+    public static Array2DRowRealMatrix askForMatrixRepeatedly(int rowCount, int columnCount) {
+        ValidationUtils.requireGreaterOrEqualThan(rowCount, 1, String.format("Row count must be >= %d", 1));
+        ValidationUtils.requireGreaterOrEqualThan(columnCount, 1, String.format("Column count must be >= %d", 1));
+        println(String.format("Input matrix with row count: %d and column count: %d", rowCount, columnCount));
+        Array2DRowRealMatrix out = new Array2DRowRealMatrix(rowCount, columnCount);
+        for(int i = 0; i < rowCount; i++) {
+            double[] row = askForDoubleArrayRepeatedly(columnCount);
+            out.setRow(i, row);
+        }
+        return out;
     }
 
     public static double[] askForDoubleArrayRepeatedly(int length) {
