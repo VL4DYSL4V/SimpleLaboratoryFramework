@@ -5,17 +5,17 @@ import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
 import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
-import framework.variable.holder.VariableDtoHolder;
-import framework.variable.dto.VariableDto;
+import framework.variable.holder.VariableHolder;
+import framework.variable.entity.Variable;
 import framework.variable.holder.VariableHolderAware;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @RequiredArgsConstructor
-public class SetVariableCommand implements Command, VariableHolderAware, ApplicationStateAware {
+public class SetVariableRunnableCommand implements RunnableCommand, VariableHolderAware, ApplicationStateAware {
 
-    private VariableDtoHolder variableHolder;
+    private VariableHolder variableHolder;
 
     private ApplicationState applicationState;
 
@@ -26,12 +26,12 @@ public class SetVariableCommand implements Command, VariableHolderAware, Applica
             return;
         }
         String variableName = args[0];
-        VariableDto variableDto = variableHolder.getVariableDto(variableName);
-        if (variableDto == null) {
+        Variable variable = variableHolder.getVariableDto(variableName);
+        if (variable == null) {
             ConsoleUtils.println("Unknown variable");
             return;
         }
-        Object result = getValueByType(variableDto.getType());
+        Object result = getValueByType(variable.getType());
         applicationState.setVariable(variableName, result);
     }
 

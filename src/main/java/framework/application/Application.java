@@ -2,7 +2,7 @@ package framework.application;
 
 import framework.application.info.ApplicationInfoPrinter;
 import framework.command.*;
-import framework.command.holder.CommandDtoHolder;
+import framework.command.holder.CommandHolder;
 import framework.command.holder.CommandHolderAware;
 import framework.enums.PropertyName;
 import framework.exception.LaboratoryFrameworkException;
@@ -10,7 +10,7 @@ import framework.state.ApplicationState;
 import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
 import framework.utils.PropertyUtils;
-import framework.variable.holder.VariableDtoHolder;
+import framework.variable.holder.VariableHolder;
 import framework.variable.holder.VariableHolderAware;
 
 import java.util.Map;
@@ -19,11 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Application {
 
-    private final Map<String, Command> commands;
+    private final Map<String, RunnableCommand> commands;
 
     private final Properties applicationProperties;
 
-    private Application(Map<String, Command> commands, Properties applicationProperties) {
+    private Application(Map<String, RunnableCommand> commands, Properties applicationProperties) {
         this.commands = commands;
         this.applicationProperties = applicationProperties;
     }
@@ -48,12 +48,12 @@ public class Application {
     }
 
     public void executeCommand(String commandName, String[] args) {
-        final Command command = commands.get(commandName);
-        if (command == null) {
+        final RunnableCommand runnableCommand = commands.get(commandName);
+        if (runnableCommand == null) {
             ConsoleUtils.print(String.format("Unknown command: %s%n", commandName));
             return;
         }
-        command.execute(args);
+        runnableCommand.execute(args);
     }
 
     public static final class ApplicationBuilder {
@@ -62,13 +62,13 @@ public class Application {
 
         private final ApplicationState state;
 
-        private final VariableDtoHolder variableDtoHolder;
+        private final VariableHolder variableHolder;
 
-        private final CommandDtoHolder commandDtoHolder;
+        private final CommandHolder commandHolder;
 
         private final ApplicationInfoPrinter infoPrinter;
 
-        private final Map<String, Command> commands = new ConcurrentHashMap<>();
+        private final Map<String, RunnableCommand> commands = new ConcurrentHashMap<>();
 
         /**
          * @param propertiesPath - Path in classpath resources to .properties configuration file
@@ -77,21 +77,21 @@ public class Application {
         public ApplicationBuilder(String propertiesPath, ApplicationState state) throws LaboratoryFrameworkException {
             this.state = state;
             this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
-            this.variableDtoHolder = new VariableDtoHolder(applicationProperties);
-            this.commandDtoHolder = new CommandDtoHolder(applicationProperties);
-            this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandDtoHolder, variableDtoHolder);
+            this.variableHolder = new VariableHolder(applicationProperties);
+            this.commandHolder = new CommandHolder(applicationProperties);
+            this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandHolder, variableHolder);
         }
 
-        public ApplicationBuilder addCommand(String commandName, Command command) {
-            commands.put(commandName, command);
-            if (command instanceof VariableHolderAware) {
-                ((VariableHolderAware) command).setVariableHolder(variableDtoHolder);
+        public ApplicationBuilder addCommand(String commandName, RunnableCommand runnableCommand) {
+            commands.put(commandName, runnableCommand);
+            if (runnableCommand instanceof VariableHolderAware) {
+                ((VariableHolderAware) runnableCommand).setVariableHolder(variableHolder);
             }
-            if (command instanceof CommandHolderAware) {
-                ((CommandHolderAware) command).setCommandHolder(commandDtoHolder);
+            if (runnableCommand instanceof CommandHolderAware) {
+                ((CommandHolderAware) runnableCommand).setCommandHolder(commandHolder);
             }
-            if (command instanceof ApplicationStateAware) {
-                ((ApplicationStateAware) command).setApplicationState(state);
+            if (runnableCommand instanceof ApplicationStateAware) {
+                ((ApplicationStateAware) runnableCommand).setApplicationState(state);
             }
             return this;
         }
@@ -102,10 +102,10 @@ public class Application {
         }
 
         private void addDefaultCommands() {
-            addCommand("help", new HelpCommand(infoPrinter));
-            addCommand("greet", new GreetingCommand(infoPrinter));
-            addCommand("exit", new ExitCommand());
-            addCommand("set", new SetVariableCommand());
+            addCommand("help", new HelpRunnableCommand(infoPrinter));
+            addCommand("greet", new GreetingRunnableCommand(infoPrinter));
+            addCommand("exit", new ExitRunnableCommand());
+            addCommand("set", new SetVariableRunnableCommand());
         }
     }
 

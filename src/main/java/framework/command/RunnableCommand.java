@@ -1,6 +1,6 @@
 package framework.command;
 
-public interface Command {
+public interface RunnableCommand {
 
     void execute(String[] args);
 

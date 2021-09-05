@@ -4,7 +4,7 @@ import framework.enums.PropertyName;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ValidationUtils;
-import framework.variable.dto.VariableDto;
+import framework.variable.entity.Variable;
 import lombok.Data;
 import lombok.Getter;
 
@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 
 @Getter
 @ThreadSafe
-public class VariableDtoHolder {
+public class VariableHolder {
 
-    private final Map<String, VariableDto> variableDtos;
+    private final Map<String, Variable> variableDtos;
 
-    public VariableDtoHolder(Properties applicationProperties) {
+    public VariableHolder(Properties applicationProperties) {
         Map<String, List<String>> variableNameToListOfKeysForIt =
                 applicationProperties.stringPropertyNames()
                         .stream()
@@ -28,14 +28,14 @@ public class VariableDtoHolder {
         this.variableDtos = fromVariableNameToListOfKeysForIt(variableNameToListOfKeysForIt, applicationProperties);
     }
 
-    public VariableDto getVariableDto(String variableName) {
+    public Variable getVariableDto(String variableName) {
         return variableDtos.get(variableName);
     }
 
     /**
      * Method builds map of variable name to variable dto. It returns unmodifiable and threadsafe map
      */
-    private Map<String, VariableDto> fromVariableNameToListOfKeysForIt(
+    private Map<String, Variable> fromVariableNameToListOfKeysForIt(
             Map<String, List<String>> variableNameToListOfKeysForIt,
             Properties applicationProperties) {
         Map<String, MutableVariableDto> container = new HashMap<>();
@@ -47,13 +47,13 @@ public class VariableDtoHolder {
                 setParamToMutableDto(dto, variableKey, value);
             }
         }
-        Map<String, VariableDto> out = new ConcurrentHashMap<>();
+        Map<String, Variable> out = new ConcurrentHashMap<>();
         container.forEach((key, value) -> out.put(key, mapMutableVariableDtoToVariableDto(value)));
         return Collections.unmodifiableMap(out);
     }
 
-    private VariableDto mapMutableVariableDtoToVariableDto(MutableVariableDto dto) {
-        return new VariableDto(
+    private Variable mapMutableVariableDtoToVariableDto(MutableVariableDto dto) {
+        return new Variable(
                 dto.getName(),
                 dto.getType(),
                 dto.getDescription(),

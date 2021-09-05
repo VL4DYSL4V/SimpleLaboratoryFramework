@@ -1,13 +1,13 @@
 package framework.application.info;
 
-import framework.command.holder.CommandDtoHolder;
-import framework.command.dto.CommandDto;
+import framework.command.holder.CommandHolder;
+import framework.command.entity.Command;
 import framework.enums.PropertyName;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
-import framework.variable.holder.VariableDtoHolder;
-import framework.variable.dto.VariableDto;
+import framework.variable.holder.VariableHolder;
+import framework.variable.entity.Variable;
 
 import java.util.Map;
 import java.util.Properties;
@@ -21,9 +21,9 @@ public class ApplicationInfoPrinter {
 
     private final String manual;
 
-    public ApplicationInfoPrinter(Properties applicationProperties, CommandDtoHolder commandDtoHolder, VariableDtoHolder variableDtoHolder) {
+    public ApplicationInfoPrinter(Properties applicationProperties, CommandHolder commandHolder, VariableHolder variableHolder) {
         this.greeting = buildGreeting(applicationProperties);
-        this.manual = buildManual(commandDtoHolder, variableDtoHolder);
+        this.manual = buildManual(commandHolder, variableHolder);
     }
 
     public void printManual() {
@@ -41,10 +41,10 @@ public class ApplicationInfoPrinter {
     }
 
 
-    private String buildManual(CommandDtoHolder commandDtoHolder, VariableDtoHolder variableDtoHolder) {
+    private String buildManual(CommandHolder commandHolder, VariableHolder variableHolder) {
         StringBuilder stringBuilder = new StringBuilder();
-        appendVariablesPart(stringBuilder, variableDtoHolder);
-        appendCommandsPart(stringBuilder, commandDtoHolder);
+        appendVariablesPart(stringBuilder, variableHolder);
+        appendCommandsPart(stringBuilder, commandHolder);
         return stringBuilder.toString();
     }
 
@@ -71,8 +71,8 @@ public class ApplicationInfoPrinter {
     /**
      * Appends 'variables' part and adds line separator character to the end
      */
-    private void appendVariablesPart(StringBuilder destination, VariableDtoHolder variableDtoHolder) {
-        Map<String, VariableDto> variables = variableDtoHolder.getVariableDtos();
+    private void appendVariablesPart(StringBuilder destination, VariableHolder variableHolder) {
+        Map<String, Variable> variables = variableHolder.getVariableDtos();
         destination.append(String.format("Variables:%n"));
         variables.forEach((k, v) -> {
             destination.append(String.format("* %s:%n", k));
@@ -85,8 +85,8 @@ public class ApplicationInfoPrinter {
     /**
      * Appends 'commands' part and adds line separator character to the end
      */
-    private void appendCommandsPart(StringBuilder destination, CommandDtoHolder commandDtoHolder) {
-        Map<String, CommandDto> commands = commandDtoHolder.getCommandDtos();
+    private void appendCommandsPart(StringBuilder destination, CommandHolder commandHolder) {
+        Map<String, Command> commands = commandHolder.getCommandDtos();
         destination.append(String.format("Commands:%n"));
         commands.forEach((k, v) -> {
             destination.append(String.format("* %s:%n", k));

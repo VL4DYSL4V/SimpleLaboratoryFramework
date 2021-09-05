@@ -1,6 +1,6 @@
 package framework.command.holder;
 
-import framework.command.dto.CommandDto;
+import framework.command.entity.Command;
 import framework.enums.PropertyName;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ValidationUtils;
@@ -13,15 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Class holds a map of command names to {@link framework.command.dto.CommandDto}
+ * Class holds a map of command names to {@link Command}
  */
 @ThreadSafe
 @Getter
-public final class CommandDtoHolder {
+public final class CommandHolder {
 
-    private final Map<String, CommandDto> commandDtos;
+    private final Map<String, Command> commandDtos;
 
-    public CommandDtoHolder(Properties applicationProperties) {
+    public CommandHolder(Properties applicationProperties) {
         Map<String, List<String>> commandNameToListOfKeysForIt =
                 applicationProperties.stringPropertyNames()
                         .stream()
@@ -33,7 +33,7 @@ public final class CommandDtoHolder {
     /**
      * Method builds map of command name to command dto. It returns unmodifiable and threadsafe map
      */
-    private Map<String, CommandDto> fromCommandNameToListOfKeysForIt(
+    private Map<String, Command> fromCommandNameToListOfKeysForIt(
             Map<String, List<String>> commandNameToListOfKeysForIt,
             Properties applicationProperties) {
         Map<String, MutableCommandDto> container = new HashMap<>();
@@ -45,13 +45,13 @@ public final class CommandDtoHolder {
                 setParamToMutableDto(dto, commandKey, value);
             }
         }
-        Map<String, CommandDto> out = new ConcurrentHashMap<>();
+        Map<String, Command> out = new ConcurrentHashMap<>();
         container.forEach((key, value) -> out.put(key, mapMutableCommandDtoToCommandDto(value)));
         return Collections.unmodifiableMap(out);
     }
 
-    private CommandDto mapMutableCommandDtoToCommandDto(MutableCommandDto dto) {
-        return new CommandDto(
+    private Command mapMutableCommandDtoToCommandDto(MutableCommandDto dto) {
+        return new Command(
                 dto.getName(),
                 dto.getArity(),
                 dto.getDescription(),

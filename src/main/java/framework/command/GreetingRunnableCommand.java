@@ -4,7 +4,7 @@ import framework.application.info.ApplicationInfoPrinter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class GreetingCommand implements Command {
+public class GreetingRunnableCommand implements RunnableCommand {
 
     private final ApplicationInfoPrinter infoPrinter;
 

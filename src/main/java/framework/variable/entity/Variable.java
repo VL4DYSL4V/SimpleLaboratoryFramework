@@ -1,16 +1,14 @@
-package framework.command.dto;
+package framework.variable.entity;
 
+import framework.enums.VariableType;
 import lombok.Data;
 
-import javax.annotation.concurrent.Immutable;
-
-@Immutable
 @Data
-public class CommandDto {
+public class Variable {
 
     private final String name;
 
-    private final int arity;
+    private final VariableType type;
 
     private final String description;
 
