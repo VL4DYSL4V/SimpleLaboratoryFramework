@@ -3,14 +3,18 @@ package framework.application.info;
 import framework.command.holder.CommandHolder;
 import framework.command.entity.Command;
 import framework.enums.PropertyName;
+import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
+import framework.variable.entity.MatrixVariable;
+import framework.variable.entity.VectorVariable;
 import framework.variable.holder.VariableHolder;
 import framework.variable.entity.Variable;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -81,6 +85,12 @@ public class ApplicationInfoPrinter {
                     destination.append(String.format("* %s:%n", e.getName()));
                     destination.append(String.format("\tDescription: %s%n", e.getDescription()));
                     destination.append(String.format("\tType: %s%n", e.getType()));
+                    if (e.getType() == VariableType.VECTOR && Objects.equals(e.getClass(), VectorVariable.class)) {
+                        destination.append(String.format("\tLength: %d%n", ((VectorVariable) e).getLength()));
+                    } else if (e.getType() == VariableType.MATRIX && Objects.equals(e.getClass(), MatrixVariable.class)) {
+                        destination.append(String.format("\tRow count: %d%n", ((MatrixVariable) e).getRowCount()));
+                        destination.append(String.format("\tColumn count: %d%n", ((MatrixVariable) e).getColumnCount()));
+                    }
                 });
         destination.append(System.lineSeparator());
     }
