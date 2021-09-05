@@ -104,7 +104,7 @@ public final class ConsoleUtils {
         ValidationUtils.requireGreaterOrEqualThan(columnCount, 1, String.format("Column count must be >= %d", 1));
         println(String.format("Input matrix with row count: %d and column count: %d", rowCount, columnCount));
         Array2DRowRealMatrix out = new Array2DRowRealMatrix(rowCount, columnCount);
-        for(int i = 0; i < rowCount; i++) {
+        for (int i = 0; i < rowCount; i++) {
             double[] row = askForDoubleArrayRepeatedly(columnCount);
             out.setRow(i, row);
         }
