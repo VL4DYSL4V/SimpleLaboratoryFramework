@@ -1,35 +1,28 @@
 package framework.state;
 
-import framework.utils.ConsoleUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class DummyApplicationState implements ApplicationState {
+@Getter
+@Setter
+public class DummyApplicationState extends AbstractApplicationState {
 
     private BigDecimal n;
 
-    @Override
-    public void setVariable(String variableName, Object value) {
-        if (Objects.equals("n", variableName)) {
-            if (Objects.equals(BigDecimal.class, value.getClass())) {
-                this.n = (BigDecimal) value;
-                ConsoleUtils.println("Success");
-            } else {
-                ConsoleUtils.println("Invalid type");
-            }
-        } else {
-            ConsoleUtils.println("Wrong name");
-        }
+    public DummyApplicationState() {
+        super();
     }
 
-    @Override
-    public Object getVariable(String variableName) {
-        if (Objects.equals("n", variableName)) {
-            return n;
-        } else {
-            ConsoleUtils.println("Wrong name");
-        }
-        return null;
+    protected void initVariableNameToSettersMap() {
+        variableNameToSetter.put("n", (name, value) -> {
+            StateHelper.defaultSet(name, "n", value, BigDecimal.class,
+                    (rawValue) -> (BigDecimal) rawValue, this::setN);
+        });
+    }
+
+    protected void initVariableNameToGettersMap() {
+        variableNameToGetter.put("n", this::getN);
     }
 }

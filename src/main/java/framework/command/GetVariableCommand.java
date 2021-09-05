@@ -37,8 +37,13 @@ public class GetVariableCommand implements RunnableCommand, ApplicationStateAwar
             ConsoleUtils.println("Unknown variable");
             return;
         }
-        Object value = applicationState.getVariable(variableName);
-        ConsoleUtils.println(String.format("%s = %s", variableName, value));
+        try {
+            Object value = applicationState.getVariable(variableName);
+            ConsoleUtils.println(String.format("%s = %s", variableName, value));
+        }
+        catch (LaboratoryFrameworkException e) {
+            ConsoleUtils.println(e.getMessage());
+        }
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {
