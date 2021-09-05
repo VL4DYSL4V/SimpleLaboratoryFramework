@@ -142,7 +142,7 @@ public class VariableHolder {
         } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_MATRIX_COLUMN_COUNT.getName())) {
             checkIfMutableMatrix(dto);
             ((MutableMatrixVariableDto) dto).setColumnCount(ConverterUtils.integerFromString(value));
-        } else {
+        } else if (!variable.endsWith(PropertyName.VARIABLE_SUFFIX_TYPE.getName())){
             throw new LaboratoryFrameworkException(String.format("Unknown key: %s", variable));
         }
     }
