@@ -61,7 +61,8 @@ public class VariableHolder {
         for (String key : keysForVariable) {
             String value = applicationProperties.getProperty(key);
             ValidationUtils.requireNonNull(value);
-            if (value.endsWith(PropertyName.VARIABLE_SUFFIX_TYPE.getName())) {
+            ValidationUtils.requireNonNull(key);
+            if (key.endsWith(PropertyName.VARIABLE_SUFFIX_TYPE.getName())) {
                 try {
                     final VariableType type = VariableType.valueOf(value.toUpperCase(Locale.ROOT));
                     return createForType(type);
