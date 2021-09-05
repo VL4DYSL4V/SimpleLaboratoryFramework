@@ -76,6 +76,7 @@ public class Application {
          */
         public ApplicationBuilder(String propertiesPath, ApplicationState state) throws LaboratoryFrameworkException {
             this.state = state;
+            injectHolders(state);
             this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
             this.variableHolder = new VariableHolder(applicationProperties);
             this.commandHolder = new CommandHolder(applicationProperties);
@@ -84,16 +85,20 @@ public class Application {
 
         public ApplicationBuilder addCommand(String commandName, RunnableCommand runnableCommand) {
             commands.put(commandName, runnableCommand);
-            if (runnableCommand instanceof VariableHolderAware) {
-                ((VariableHolderAware) runnableCommand).setVariableHolder(variableHolder);
-            }
-            if (runnableCommand instanceof CommandHolderAware) {
-                ((CommandHolderAware) runnableCommand).setCommandHolder(commandHolder);
-            }
+            injectHolders(runnableCommand);
             if (runnableCommand instanceof ApplicationStateAware) {
                 ((ApplicationStateAware) runnableCommand).setApplicationState(state);
             }
             return this;
+        }
+
+        private void injectHolders(Object target) {
+            if (target instanceof VariableHolderAware) {
+                ((VariableHolderAware) target).setVariableHolder(variableHolder);
+            }
+            if (target instanceof CommandHolderAware) {
+                ((CommandHolderAware) target).setCommandHolder(commandHolder);
+            }
         }
 
         public Application build() {

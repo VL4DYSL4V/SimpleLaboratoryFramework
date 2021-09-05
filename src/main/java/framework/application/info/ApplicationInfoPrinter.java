@@ -24,15 +24,18 @@ public class ApplicationInfoPrinter {
 
     private final String greeting;
 
-    private final String manual;
+    private final CommandHolder commandHolder;
+
+    private final VariableHolder variableHolder;
 
     public ApplicationInfoPrinter(Properties applicationProperties, CommandHolder commandHolder, VariableHolder variableHolder) {
         this.greeting = buildGreeting(applicationProperties);
-        this.manual = buildManual(commandHolder, variableHolder);
+        this.commandHolder = commandHolder;
+        this.variableHolder = variableHolder;
     }
 
     public void printManual() {
-        ConsoleUtils.println(this.manual);
+        ConsoleUtils.println(buildManual());
     }
 
     public void printGreeting() {
@@ -46,7 +49,7 @@ public class ApplicationInfoPrinter {
     }
 
 
-    private String buildManual(CommandHolder commandHolder, VariableHolder variableHolder) {
+    private String buildManual() {
         StringBuilder stringBuilder = new StringBuilder();
         appendVariablesPart(stringBuilder, variableHolder);
         appendCommandsPart(stringBuilder, commandHolder);
@@ -86,10 +89,19 @@ public class ApplicationInfoPrinter {
                     destination.append(String.format("\tDescription: %s%n", e.getDescription()));
                     destination.append(String.format("\tType: %s%n", e.getType()));
                     if (e.getType() == VariableType.VECTOR && Objects.equals(e.getClass(), VectorVariable.class)) {
-                        destination.append(String.format("\tLength: %d%n", ((VectorVariable) e).getLength()));
+                        int length = ((VectorVariable) e).getLength();
+                        if (length > 0) {
+                            destination.append(String.format("\tLength: %d%n", length));
+                        }
                     } else if (e.getType() == VariableType.MATRIX && Objects.equals(e.getClass(), MatrixVariable.class)) {
-                        destination.append(String.format("\tRow count: %d%n", ((MatrixVariable) e).getRowCount()));
-                        destination.append(String.format("\tColumn count: %d%n", ((MatrixVariable) e).getColumnCount()));
+                        int rowCount = ((MatrixVariable) e).getRowCount();
+                        if (rowCount > 0) {
+                            destination.append(String.format("\tRow count: %d%n", rowCount));
+                        }
+                        int columnCount = ((MatrixVariable) e).getColumnCount();
+                        if (columnCount > 0) {
+                            destination.append(String.format("\tColumn count: %d%n", columnCount));
+                        }
                     }
                 });
         destination.append(System.lineSeparator());

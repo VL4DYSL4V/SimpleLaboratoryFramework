@@ -3,13 +3,11 @@ package framework.variable.holder;
 import framework.enums.PropertyName;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
-import framework.utils.ConverterUtils;
 import framework.utils.ValidationUtils;
 import framework.variable.entity.MatrixVariable;
 import framework.variable.entity.Variable;
 import framework.variable.entity.VectorVariable;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -45,7 +43,7 @@ public class VariableHolder {
         Map<String, MutableVariableDto> container = new HashMap<>();
         for (String variableName : variableNameToListOfKeysForIt.keySet()) {
             final List<String> listOfKeys = variableNameToListOfKeysForIt.get(variableName);
-            MutableVariableDto dto = createWithCorrectType(listOfKeys, applicationProperties);
+            MutableVariableDto dto = new MutableVariableDto();
             container.putIfAbsent(variableName, dto);
             for (String variableKey : listOfKeys) {
                 String value = applicationProperties.getProperty(variableKey);
@@ -57,55 +55,18 @@ public class VariableHolder {
         return Collections.unmodifiableMap(out);
     }
 
-    private MutableVariableDto createWithCorrectType(List<String> keysForVariable, Properties applicationProperties) {
-        for (String key : keysForVariable) {
-            String value = applicationProperties.getProperty(key);
-            ValidationUtils.requireNonNull(value);
-            ValidationUtils.requireNonNull(key);
-            if (key.endsWith(PropertyName.VARIABLE_SUFFIX_TYPE.getName())) {
-                try {
-                    final VariableType type = VariableType.valueOf(value.toUpperCase(Locale.ROOT));
-                    return createForType(type);
-                } catch (Throwable e) {
-                    throw new LaboratoryFrameworkException(String.format("Unknown type: %s", value));
-                }
-            }
-        }
-        throw new LaboratoryFrameworkException("Property type must be specified");
-    }
-
-    private MutableVariableDto createForType(VariableType type) {
-        MutableVariableDto mutableVariableDto;
-        switch (type) {
-            case VECTOR:
-                mutableVariableDto = new MutableVectorVariableDto();
-                break;
-            case MATRIX:
-                mutableVariableDto = new MutableMatrixVariableDto();
-                break;
-            default:
-                mutableVariableDto = new MutableVariableDto();
-                break;
-        }
-        mutableVariableDto.setType(type);
-        return mutableVariableDto;
-    }
-
     private Variable mapMutableVariableDtoToVariableDto(MutableVariableDto dto) {
         switch (dto.getType()) {
             case VECTOR:
                 return new VectorVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
-                        dto.getConstraintViolationMessage(),
-                        ((MutableVectorVariableDto) dto).getLength());
+                        dto.getConstraintViolationMessage(), 0);
             case MATRIX:
                 return new MatrixVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
-                        dto.getConstraintViolationMessage(),
-                        ((MutableMatrixVariableDto) dto).getRowCount(),
-                        ((MutableMatrixVariableDto) dto).getColumnCount());
+                        dto.getConstraintViolationMessage(), 0, 0);
         }
         return new Variable(
                 dto.getName(),
@@ -133,31 +94,18 @@ public class VariableHolder {
             dto.setDescription(value);
         } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE.getName())) {
             dto.setConstraintViolationMessage(value);
-        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_VECTOR_LENGTH.getName())) {
-            checkIfMutableVector(dto);
-            ((MutableVectorVariableDto) dto).setLength(ConverterUtils.integerFromString(value));
-        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_MATRIX_ROW_COUNT.getName())) {
-            checkIfMutableMatrix(dto);
-            ((MutableMatrixVariableDto) dto).setRowCount(ConverterUtils.integerFromString(value));
-        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_MATRIX_COLUMN_COUNT.getName())) {
-            checkIfMutableMatrix(dto);
-            ((MutableMatrixVariableDto) dto).setColumnCount(ConverterUtils.integerFromString(value));
-        } else if (!variable.endsWith(PropertyName.VARIABLE_SUFFIX_TYPE.getName())){
+        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_TYPE.getName())) {
+            try {
+                final VariableType type = VariableType.valueOf(value.toUpperCase(Locale.ROOT));
+                dto.setType(type);
+            } catch (Throwable e) {
+                throw new LaboratoryFrameworkException(String.format("Unknown type: %s", value));
+            }
+        } else {
             throw new LaboratoryFrameworkException(String.format("Unknown key: %s", variable));
         }
     }
 
-    private void checkIfMutableVector(MutableVariableDto dto) {
-        if (dto.getType() != VariableType.VECTOR || !Objects.equals(dto.getClass(), MutableVectorVariableDto.class)) {
-            throw new LaboratoryFrameworkException("Supplied value is not mutable vector");
-        }
-    }
-
-    private void checkIfMutableMatrix(MutableVariableDto dto) {
-        if (dto.getType() != VariableType.MATRIX || !Objects.equals(dto.getClass(), MutableMatrixVariableDto.class)) {
-            throw new LaboratoryFrameworkException("Supplied value is not mutable vector");
-        }
-    }
 
     @Data
     private static class MutableVariableDto {
@@ -172,21 +120,4 @@ public class VariableHolder {
 
     }
 
-    @Data
-    @EqualsAndHashCode(callSuper = true)
-    private static class MutableVectorVariableDto extends MutableVariableDto {
-
-        private int length;
-
-    }
-
-    @Data
-    @EqualsAndHashCode(callSuper = true)
-    private static class MutableMatrixVariableDto extends MutableVariableDto {
-
-        private int rowCount;
-
-        private int columnCount;
-
-    }
 }

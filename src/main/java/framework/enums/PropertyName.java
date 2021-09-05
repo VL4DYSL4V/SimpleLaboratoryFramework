@@ -25,10 +25,7 @@ public enum PropertyName {
     VARIABLE_SUFFIX_NAME("name"),
     VARIABLE_SUFFIX_TYPE("type"),
     VARIABLE_SUFFIX_DESCRIPTION("description"),
-    VARIABLE_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message"),
-    VARIABLE_SUFFIX_VECTOR_LENGTH("length"),
-    VARIABLE_SUFFIX_MATRIX_ROW_COUNT("row-count"),
-    VARIABLE_SUFFIX_MATRIX_COLUMN_COUNT("column-count");
+    VARIABLE_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message");
 
     private final String name;
 
