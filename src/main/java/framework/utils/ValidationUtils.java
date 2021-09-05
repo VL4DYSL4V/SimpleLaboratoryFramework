@@ -46,17 +46,59 @@ public final class ValidationUtils {
     }
 
     /**
-     * @throws LaboratoryFrameworkException if given parameter is less than numberToCompare with supplied message
+     * @throws LaboratoryFrameworkException if given parameter is < numberToCompare with supplied message
+     *                                      or if obj is null or if numberToCompare is null
      */
     public static <T extends Number & Comparable<T>> void requireGreaterOrEqualThan(T obj, T numberToCompare, String message)
             throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(numberToCompare);
         if (obj.compareTo(numberToCompare) < 0) {
             throw new LaboratoryFrameworkException(message);
         }
     }
 
     /**
-     * @throws LaboratoryFrameworkException if given parameter is less than lowerBound or greater than upperBound
+     * @throws LaboratoryFrameworkException if given parameter is <= numberToCompare with supplied message
+     *                                      or if obj is null or if numberToCompare is null
+     */
+    public static <T extends Number & Comparable<T>> void requireGreaterThan(T obj, T numberToCompare, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(numberToCompare);
+        if (obj.compareTo(numberToCompare) <= 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is > numberToCompare with supplied message
+     *                                      or if obj is null or if numberToCompare is null
+     */
+    public static <T extends Number & Comparable<T>> void requireLesserOrEqualThan(T obj, T numberToCompare, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(numberToCompare);
+        if (obj.compareTo(numberToCompare) > 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is >= numberToCompare with supplied message
+     *                                      or if obj is null or if numberToCompare is null
+     */
+    public static <T extends Number & Comparable<T>> void requireLesserThan(T obj, T numberToCompare, String message)
+            throws LaboratoryFrameworkException {
+        requireNonNull(obj);
+        requireNonNull(numberToCompare);
+        if (obj.compareTo(numberToCompare) >= 0) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
+
+    /**
+     * @throws LaboratoryFrameworkException if given parameter is < lowerBound or > upperBound
      *                                      with supplied message
      */
     public static <T extends Number & Comparable<T>> void requireBetweenClosed(T obj, T lowerBound, T upperBound, String message)

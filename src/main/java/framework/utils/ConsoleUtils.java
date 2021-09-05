@@ -1,6 +1,7 @@
 package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
+import org.apache.commons.math3.linear.ArrayRealVector;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -90,13 +91,40 @@ public final class ConsoleUtils {
                 "Invalid number format. Try again");
     }
 
-    public static <T> T askForObjectRepeatedly(String message, Function<String, T> objectFromStringFunction, String errorMessage) {
+    public static ArrayRealVector askForVectorRepeatedly(int vectorLength) {
+        ValidationUtils.requireGreaterOrEqualThan(vectorLength, 1, String.format("Vector length must be >= %d", 1));
+        double[] values = askForDoubleArrayRepeatedly(vectorLength);
+        return new ArrayRealVector(values);
+    }
+
+    public static double[] askForDoubleArrayRepeatedly(int length) {
+        ValidationUtils.requireGreaterOrEqualThan(length, 1, String.format("Array length must be >= %d", 1));
+        String message = String.format("Input %d numbers(double), split by whitespace", length);
+        Function<String, double[]> mapper = s -> convertStringToDoubleArray(s, length);
+        return askForObjectRepeatedly(message, mapper, "Invalid input");
+    }
+
+    private static double[] convertStringToDoubleArray(String s, int length) {
+        ValidationUtils.requireGreaterOrEqualThan(length, 1, String.format("Array length must be >= %d", 1));
+        String message = String.format("String must contain %d numbers", length);
+        final String[] split = s.split(" ");
+        if (split.length != length) {
+            throw new LaboratoryFrameworkException(message);
+        }
+        double[] values = new double[split.length];
+        for (int i = 0; i < split.length; i++) {
+            values[i] = Double.parseDouble(split[i]);
+        }
+        return values;
+    }
+
+    public static <T> T askForObjectRepeatedly(String message, Function<String, T> mapper, String errorMessage) {
         println(message);
         T out = null;
         while (out == null) {
             String nextLine = readLine().trim();
             try {
-                out = objectFromStringFunction.apply(nextLine);
+                out = mapper.apply(nextLine);
             } catch (Exception e) {
                 println(errorMessage);
             }
