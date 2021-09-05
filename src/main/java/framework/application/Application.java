@@ -102,10 +102,11 @@ public class Application {
         }
 
         private void addDefaultCommands() {
-            addCommand("help", new HelpRunnableCommand(infoPrinter));
-            addCommand("greet", new GreetingRunnableCommand(infoPrinter));
-            addCommand("exit", new ExitRunnableCommand());
-            addCommand("set", new SetVariableRunnableCommand());
+            addCommand("help", new HelpCommand(infoPrinter));
+            addCommand("greet", new GreetingCommand(infoPrinter));
+            addCommand("exit", new ExitCommand());
+            addCommand("set", new SetVariableCommand());
+            addCommand("get", new GetVariableCommand());
         }
     }
 

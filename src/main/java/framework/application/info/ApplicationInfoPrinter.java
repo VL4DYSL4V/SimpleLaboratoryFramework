@@ -9,6 +9,7 @@ import framework.utils.ValidationUtils;
 import framework.variable.holder.VariableHolder;
 import framework.variable.entity.Variable;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -74,11 +75,13 @@ public class ApplicationInfoPrinter {
     private void appendVariablesPart(StringBuilder destination, VariableHolder variableHolder) {
         Map<String, Variable> variables = variableHolder.getVariableDtos();
         destination.append(String.format("Variables:%n"));
-        variables.forEach((k, v) -> {
-            destination.append(String.format("* %s:%n", k));
-            destination.append(String.format("\tDescription: %s%n", v.getDescription()));
-            destination.append(String.format("\tType: %s%n", v.getType()));
-        });
+        variables.values().stream()
+                .sorted(Comparator.comparing(Variable::getName))
+                .forEach((e) -> {
+                    destination.append(String.format("* %s:%n", e.getName()));
+                    destination.append(String.format("\tDescription: %s%n", e.getDescription()));
+                    destination.append(String.format("\tType: %s%n", e.getType()));
+                });
         destination.append(System.lineSeparator());
     }
 
@@ -88,11 +91,13 @@ public class ApplicationInfoPrinter {
     private void appendCommandsPart(StringBuilder destination, CommandHolder commandHolder) {
         Map<String, Command> commands = commandHolder.getCommands();
         destination.append(String.format("Commands:%n"));
-        commands.forEach((k, v) -> {
-            destination.append(String.format("* %s:%n", k));
-            destination.append(String.format("\tDescription: %s%n", v.getDescription()));
-            destination.append(String.format("\tArity: %s%n", v.getArity()));
-        });
+        commands.values().stream()
+                .sorted(Comparator.comparing(Command::getName))
+                .forEach(e -> {
+                    destination.append(String.format("* %s:%n", e.getName()));
+                    destination.append(String.format("\tDescription: %s%n", e.getDescription()));
+                    destination.append(String.format("\tArity: %s%n", e.getArity()));
+                });
         destination.append(System.lineSeparator());
     }
 }

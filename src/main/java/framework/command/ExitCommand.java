@@ -1,6 +1,6 @@
 package framework.command;
 
-public class ExitRunnableCommand implements RunnableCommand {
+public class ExitCommand implements RunnableCommand {
 
     @Override
     public void execute(String[] args) {

@@ -3,43 +3,31 @@ package framework.command;
 import framework.command.entity.Command;
 import framework.command.holder.CommandHolder;
 import framework.command.holder.CommandHolderAware;
-import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
 import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
-import framework.variable.holder.VariableHolder;
 import framework.variable.entity.Variable;
+import framework.variable.holder.VariableHolder;
 import framework.variable.holder.VariableHolderAware;
 import lombok.Setter;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
 @Setter
-public class SetVariableRunnableCommand implements RunnableCommand, VariableHolderAware,
-        CommandHolderAware, ApplicationStateAware {
-
-    private CommandHolder commandHolder;
-
-    private VariableHolder variableHolder;
+public class GetVariableCommand implements RunnableCommand, ApplicationStateAware,
+        VariableHolderAware, CommandHolderAware {
 
     private ApplicationState applicationState;
 
-    private final Map<VariableType, Supplier<Object>> variableTypeToValueSupplierMap =
-            new EnumMap<>(VariableType.class);
+    private VariableHolder variableHolder;
 
-    public SetVariableRunnableCommand() {
-        setValueSuppliers();
-    }
+    private CommandHolder commandHolder;
 
     @Override
     public void execute(String[] args) {
         assertFieldsArePresent();
         if (args.length != 1) {
-            Command runnableCommand = commandHolder.getCommand("set");
+            Command runnableCommand = commandHolder.getCommand("get");
             ConsoleUtils.println(runnableCommand.getConstraintViolationMessage());
             return;
         }
@@ -49,12 +37,8 @@ public class SetVariableRunnableCommand implements RunnableCommand, VariableHold
             ConsoleUtils.println("Unknown variable");
             return;
         }
-        Object result = variableTypeToValueSupplierMap.get(variable.getType()).get();
-        applicationState.setVariable(variableName, result);
-    }
-
-    private void setValueSuppliers() {
-        variableTypeToValueSupplierMap.put(VariableType.BIG_DECIMAL, ConsoleUtils::askForBigDecimalRepeatedly);
+        Object value = applicationState.getVariable(variableName);
+        ConsoleUtils.println(String.format("%s = %s", variableName, value));
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {
