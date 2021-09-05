@@ -76,11 +76,11 @@ public class Application {
          */
         public ApplicationBuilder(String propertiesPath, ApplicationState state) throws LaboratoryFrameworkException {
             this.state = state;
-            injectHolders(state);
             this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
             this.variableHolder = new VariableHolder(applicationProperties);
             this.commandHolder = new CommandHolder(applicationProperties);
             this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandHolder, variableHolder);
+            injectHolders(state);
         }
 
         public ApplicationBuilder addCommand(String commandName, RunnableCommand runnableCommand) {
