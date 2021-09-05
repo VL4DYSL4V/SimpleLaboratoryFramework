@@ -86,7 +86,7 @@ public class ApplicationInfoPrinter {
      * Appends 'commands' part and adds line separator character to the end
      */
     private void appendCommandsPart(StringBuilder destination, CommandHolder commandHolder) {
-        Map<String, Command> commands = commandHolder.getCommandDtos();
+        Map<String, Command> commands = commandHolder.getCommands();
         destination.append(String.format("Commands:%n"));
         commands.forEach((k, v) -> {
             destination.append(String.format("* %s:%n", k));

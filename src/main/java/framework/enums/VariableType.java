@@ -2,7 +2,7 @@ package framework.enums;
 
 public enum VariableType {
 
-    NUMBER,
+    BIG_DECIMAL,
     STRING,
     VECTOR,
     MATRIX;

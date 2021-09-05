@@ -22,4 +22,14 @@ public class DummyApplicationState implements ApplicationState {
             ConsoleUtils.println("Wrong name");
         }
     }
+
+    @Override
+    public Object getVariable(String variableName) {
+        if (Objects.equals("n", variableName)) {
+            return n;
+        } else {
+            ConsoleUtils.println("Wrong name");
+        }
+        return null;
+    }
 }

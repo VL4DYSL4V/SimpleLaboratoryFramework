@@ -38,7 +38,7 @@ public class Application {
     }
 
     private void listenForTheInput() {
-        String input = ConsoleUtils.readLine();
+        String input = ConsoleUtils.readLine().trim();
         if (!input.isEmpty()) {
             String[] parts = input.split(" ");
             String[] args = new String[parts.length - 1];

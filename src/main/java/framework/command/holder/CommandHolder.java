@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Getter
 public final class CommandHolder {
 
-    private final Map<String, Command> commandDtos;
+    private final Map<String, Command> commands;
 
     public CommandHolder(Properties applicationProperties) {
         Map<String, List<String>> commandNameToListOfKeysForIt =
@@ -27,7 +27,11 @@ public final class CommandHolder {
                         .stream()
                         .filter(key -> key.startsWith(PropertyName.COMMAND_PREFIX.getName()))
                         .collect(Collectors.groupingBy(PropertyName::extractCommandName));
-        this.commandDtos = fromCommandNameToListOfKeysForIt(commandNameToListOfKeysForIt, applicationProperties);
+        this.commands = fromCommandNameToListOfKeysForIt(commandNameToListOfKeysForIt, applicationProperties);
+    }
+
+    public Command getCommand(String commandName) {
+        return commands.get(commandName);
     }
 
     /**
