@@ -83,28 +83,46 @@ public class ApplicationInfoPrinter {
         Map<String, Variable> variables = variableHolder.getVariables();
         destination.append(String.format("Variables:%n"));
         variables.values().stream()
+                .filter((e) -> !e.isCannotBeSetFromInput())
+                .sorted(Comparator.comparing(Variable::getName))
+                .forEach((e) -> appendGeneralVariableInfo(destination, e));
+        destination.append(System.lineSeparator());
+        destination.append(String.format("Variables that cannot be set:%n"));
+        variables.values().stream()
+                .filter(Variable::isCannotBeSetFromInput)
                 .sorted(Comparator.comparing(Variable::getName))
                 .forEach((e) -> {
-                    destination.append(String.format("* %s:%n", e.getName()));
-                    destination.append(String.format("\tDescription: %s%n", e.getDescription()));
-                    destination.append(String.format("\tType: %s%n", e.getType()));
-                    if (e.getType() == VariableType.VECTOR && Objects.equals(e.getClass(), VectorVariable.class)) {
-                        int length = ((VectorVariable) e).getLength();
-                        if (length > 0) {
-                            destination.append(String.format("\tLength: %d%n", length));
-                        }
-                    } else if (e.getType() == VariableType.MATRIX && Objects.equals(e.getClass(), MatrixVariable.class)) {
-                        int rowCount = ((MatrixVariable) e).getRowCount();
-                        if (rowCount > 0) {
-                            destination.append(String.format("\tRow count: %d%n", rowCount));
-                        }
-                        int columnCount = ((MatrixVariable) e).getColumnCount();
-                        if (columnCount > 0) {
-                            destination.append(String.format("\tColumn count: %d%n", columnCount));
-                        }
-                    }
+                    appendGeneralVariableInfo(destination, e);
+                    appendVariableCannotBeSet(destination, e);
                 });
         destination.append(System.lineSeparator());
+    }
+
+    private void appendGeneralVariableInfo(StringBuilder destination, Variable variable) {
+        destination.append(String.format("* %s:%n", variable.getName()));
+        destination.append(String.format("\tDescription: %s%n", variable.getDescription()));
+        destination.append(String.format("\tType: %s%n", variable.getType()));
+        if (variable.getType() == VariableType.VECTOR && Objects.equals(variable.getClass(), VectorVariable.class)) {
+            int length = ((VectorVariable) variable).getLength();
+            if (length > 0) {
+                destination.append(String.format("\tLength: %d%n", length));
+            }
+        } else if (variable.getType() == VariableType.MATRIX && Objects.equals(variable.getClass(), MatrixVariable.class)) {
+            int rowCount = ((MatrixVariable) variable).getRowCount();
+            if (rowCount > 0) {
+                destination.append(String.format("\tRow count: %d%n", rowCount));
+            }
+            int columnCount = ((MatrixVariable) variable).getColumnCount();
+            if (columnCount > 0) {
+                destination.append(String.format("\tColumn count: %d%n", columnCount));
+            }
+        }
+    }
+
+    private void appendVariableCannotBeSet(StringBuilder destination, Variable variable) {
+        if (variable.isCannotBeSetFromInput()) {
+            destination.append("\t* Value cannot be set from input");
+        }
     }
 
     /**

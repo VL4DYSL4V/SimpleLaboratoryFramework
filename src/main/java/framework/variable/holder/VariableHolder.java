@@ -61,17 +61,20 @@ public class VariableHolder {
                 return new VectorVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
+                        dto.isCannotBeSetFromInput(),
                         dto.getConstraintViolationMessage(), 0);
             case MATRIX:
                 return new MatrixVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
+                        dto.isCannotBeSetFromInput(),
                         dto.getConstraintViolationMessage(), 0, 0);
         }
         return new Variable(
                 dto.getName(),
                 dto.getType(),
                 dto.getDescription(),
+                dto.isCannotBeSetFromInput(),
                 dto.getConstraintViolationMessage());
     }
 
@@ -101,6 +104,8 @@ public class VariableHolder {
             } catch (Throwable e) {
                 throw new LaboratoryFrameworkException(String.format("Unknown type: %s", value));
             }
+        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_CANNOT_BE_SET_FROM_INPUT.getName())) {
+            dto.setCannotBeSetFromInput(Boolean.parseBoolean(value));
         } else {
             throw new LaboratoryFrameworkException(String.format("Unknown key: %s", variable));
         }
@@ -115,6 +120,8 @@ public class VariableHolder {
         private VariableType type;
 
         private String description;
+
+        private boolean cannotBeSetFromInput;
 
         private String constraintViolationMessage;
 

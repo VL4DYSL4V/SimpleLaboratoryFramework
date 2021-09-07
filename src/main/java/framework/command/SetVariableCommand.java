@@ -51,6 +51,10 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
             ConsoleUtils.println("Unknown variable");
             return;
         }
+        if (variable.isCannotBeSetFromInput()) {
+            ConsoleUtils.println("You cannot set this variable from input");
+            return;
+        }
         Object result = getValueForValue(variable);
         applicationState.setVariable(variableName, result);
     }

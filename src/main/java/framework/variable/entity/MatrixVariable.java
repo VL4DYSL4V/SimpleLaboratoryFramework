@@ -16,8 +16,9 @@ public class MatrixVariable extends Variable {
 
     private int columnCount;
 
-    public MatrixVariable(String name, VariableType type, String description, String constraintViolationMessage, int rowCount, int columnCount) {
-        super(name, type, description, constraintViolationMessage);
+    public MatrixVariable(String name, VariableType type, String description, boolean cannotBeSetFromInput,
+                          String constraintViolationMessage, int rowCount, int columnCount) {
+        super(name, type, description, cannotBeSetFromInput, constraintViolationMessage);
         this.rowCount = rowCount;
         this.columnCount = columnCount;
     }

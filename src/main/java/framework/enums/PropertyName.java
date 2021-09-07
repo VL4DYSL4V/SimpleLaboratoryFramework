@@ -24,6 +24,7 @@ public enum PropertyName {
     VARIABLE_PREFIX("variable"),
     VARIABLE_SUFFIX_NAME("name"),
     VARIABLE_SUFFIX_TYPE("type"),
+    VARIABLE_SUFFIX_CANNOT_BE_SET_FROM_INPUT("cannot-be-set-from-input"),
     VARIABLE_SUFFIX_DESCRIPTION("description"),
     VARIABLE_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message");
 

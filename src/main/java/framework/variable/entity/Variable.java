@@ -12,6 +12,8 @@ public class Variable {
 
     private final String description;
 
+    private final boolean cannotBeSetFromInput;
+
     private final String constraintViolationMessage;
 
 }
