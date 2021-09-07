@@ -121,7 +121,7 @@ public class ApplicationInfoPrinter {
 
     private void appendVariableCannotBeSet(StringBuilder destination, Variable variable) {
         if (variable.isCannotBeSetFromInput()) {
-            destination.append("\t* Value cannot be set from input");
+            destination.append(String.format("\t* Value cannot be set from input%n"));
         }
     }
 
