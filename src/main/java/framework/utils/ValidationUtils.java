@@ -2,6 +2,8 @@ package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
 
+import java.util.Objects;
+
 public final class ValidationUtils {
 
     private ValidationUtils() {
@@ -45,6 +47,11 @@ public final class ValidationUtils {
         }
     }
 
+    public static void requireEquals(Object o1, Object o2, String message) throws LaboratoryFrameworkException {
+        if (!Objects.equals(o1, o2)) {
+            throw new LaboratoryFrameworkException(message);
+        }
+    }
     /**
      * @throws LaboratoryFrameworkException if given parameter is < numberToCompare with supplied message
      *                                      or if obj is null or if numberToCompare is null
