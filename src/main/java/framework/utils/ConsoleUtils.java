@@ -75,7 +75,7 @@ public final class ConsoleUtils {
 
     public static Boolean askForBooleanRepeatedly() {
         return askForObjectRepeatedly("Input a number (Boolean)", Boolean::parseBoolean,
-                "Invalid number format. Try again");
+                "Invalid boolean format. Try again");
     }
 
     public static Character askForCharacterRepeatedly() {
@@ -84,7 +84,7 @@ public final class ConsoleUtils {
                     ValidationUtils.requireNotEmpty(s);
                     return s.charAt(0);
                 },
-                "Invalid number format. Try again");
+                "Invalid input, string must not be empty. Try again");
     }
 
     public static Float askForFloatRepeatedly() {
