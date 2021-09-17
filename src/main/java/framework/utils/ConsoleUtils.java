@@ -39,7 +39,13 @@ public final class ConsoleUtils {
     }
 
     public static String askForStringRepeatedly() {
-        return askForObjectRepeatedly("Input a string (Not empty)", Function.identity(),
+        Function<String, String> mapper = (s) -> {
+            if (s == null || s.isEmpty()) {
+                throw new RuntimeException();
+            }
+            return s;
+        };
+        return askForObjectRepeatedly("Input a string (Not empty)", mapper,
                 "Invalid string. Try again");
     }
 
