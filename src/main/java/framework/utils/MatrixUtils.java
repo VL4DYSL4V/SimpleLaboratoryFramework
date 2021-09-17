@@ -1,6 +1,7 @@
 package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.DiagonalMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -35,4 +36,22 @@ public class MatrixUtils {
         return new DiagonalMatrix(arrayOfOnes);
     }
 
+    public static RealMatrix getFrobeniusMatrix(double[] coefficients) {
+        if (coefficients == null || coefficients.length <= 1) {
+            throw new LaboratoryFrameworkException("Invalid coefficient array");
+        }
+        Array2DRowRealMatrix out = new Array2DRowRealMatrix(coefficients.length, coefficients.length);
+        for (int i = 0; i < coefficients.length - 1; i++) {
+            double[] row = new double[coefficients.length];
+            Arrays.fill(row, 0);
+            row[i + 1] = 1;
+            out.setRow(i, row);
+        }
+        double[] lastRow = new double[coefficients.length];
+        for (int i = 0; i < coefficients.length; i++) {
+            lastRow[i] = -1 * coefficients[i];
+        }
+        out.setRow(coefficients.length - 1, lastRow);
+        return out;
+    }
 }
