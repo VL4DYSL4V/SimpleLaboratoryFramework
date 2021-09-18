@@ -1,16 +1,16 @@
 package framework.application.info;
 
-import framework.command.holder.CommandHolder;
 import framework.command.entity.Command;
+import framework.command.holder.CommandHolder;
 import framework.enums.PropertyName;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
 import framework.variable.entity.MatrixVariable;
+import framework.variable.entity.Variable;
 import framework.variable.entity.VectorVariable;
 import framework.variable.holder.VariableHolder;
-import framework.variable.entity.Variable;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -91,10 +91,7 @@ public class ApplicationInfoPrinter {
         variables.values().stream()
                 .filter(Variable::isCannotBeSetFromInput)
                 .sorted(Comparator.comparing(Variable::getName))
-                .forEach((e) -> {
-                    appendGeneralVariableInfo(destination, e);
-                    appendVariableCannotBeSet(destination, e);
-                });
+                .forEach((e) -> appendGeneralVariableInfo(destination, e));
         destination.append(System.lineSeparator());
     }
 
@@ -116,12 +113,6 @@ public class ApplicationInfoPrinter {
             if (columnCount > 0) {
                 destination.append(String.format("\tColumn count: %d%n", columnCount));
             }
-        }
-    }
-
-    private void appendVariableCannotBeSet(StringBuilder destination, Variable variable) {
-        if (variable.isCannotBeSetFromInput()) {
-            destination.append(String.format("\t* Value cannot be set from input%n"));
         }
     }
 
