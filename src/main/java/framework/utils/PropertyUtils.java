@@ -23,6 +23,22 @@ public final class PropertyUtils {
      *                                      </ul>
      */
     public static Properties readFromFile(String pathInResources) throws LaboratoryFrameworkException {
+        Properties out = new Properties();
+        readFromFile(pathInResources, out);
+        return out;
+    }
+
+    /**
+     * @param pathInResources - path in classpath resources directory, must start with {@link java.io.File#separator}
+     * @param destination     - where to load data
+     * @throws LaboratoryFrameworkException if:
+     *                                      <ul>
+     *                                          <li>Specified path is null</li>
+     *                                          <li>InputStream for resource is null</li>
+     *                                          <li>Any IOException has occurred</li>
+     *                                      </ul>
+     */
+    public static void readFromFile(String pathInResources, Properties destination) throws LaboratoryFrameworkException {
         ValidationUtils.requireNotEmpty(pathInResources, "Path to property file is not specified");
         if (!pathInResources.startsWith(File.separator)) {
             pathInResources = File.separator.concat(pathInResources);
@@ -31,13 +47,10 @@ public final class PropertyUtils {
             String message = String.format("InputStream for resource %s is null", pathInResources);
             ValidationUtils.requireNonNull(resourceAsStream, message);
             try (BufferedInputStream bufferedInputStream = new BufferedInputStream(resourceAsStream)) {
-                Properties out = new Properties();
-                out.load(bufferedInputStream);
-                return out;
+                destination.load(bufferedInputStream);
             }
         } catch (IOException e) {
             throw new LaboratoryFrameworkException(e);
         }
     }
-
 }

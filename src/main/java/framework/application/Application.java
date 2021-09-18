@@ -76,7 +76,7 @@ public class Application {
          */
         public ApplicationBuilder(String propertiesPath, ApplicationState state) throws LaboratoryFrameworkException {
             this.state = state;
-            this.applicationProperties = PropertyUtils.readFromFile(propertiesPath);
+            this.applicationProperties = getProperties(propertiesPath);
             this.variableHolder = new VariableHolder(applicationProperties);
             this.commandHolder = new CommandHolder(applicationProperties);
             this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandHolder, variableHolder);
@@ -112,6 +112,38 @@ public class Application {
             addCommand("exit", new ExitCommand());
             addCommand("set", new SetVariableCommand());
             addCommand("get", new GetVariableCommand());
+        }
+
+        private Properties getProperties(String propertiesPath) {
+            Properties properties = new Properties();
+
+            properties.setProperty("command.help.name", "help");
+            properties.setProperty("command.help.arity", "0");
+            properties.setProperty("command.help.description", "Prints all commands with arity and description");
+            properties.setProperty("command.help.constraint-violation-message", "");
+
+            properties.setProperty("command.greet.name", "greet");
+            properties.setProperty("command.greet.arity", "0");
+            properties.setProperty("command.greet.description", "Prints greetings");
+            properties.setProperty("command.greet.constraint-violation-message", "");
+
+            properties.setProperty("command.get.name", "get");
+            properties.setProperty("command.get.arity", "1");
+            properties.setProperty("command.get.description", "Returns value of variable with supplied name. Example: get variable-name");
+            properties.setProperty("command.get.constraint-violation-message", "Command requires 1 argument: the name of variable to get");
+
+            properties.setProperty("command.set.name", "set");
+            properties.setProperty("command.set.arity", "1");
+            properties.setProperty("command.set.description", "Invokes setting variable mechanism. Example: set variable-name");
+            properties.setProperty("command.set.constraint-violation-message", "Command requires 1 argument: the name of variable to be set");
+
+            properties.setProperty("command.exit.name", "exit");
+            properties.setProperty("command.exit.arity", "0");
+            properties.setProperty("command.exit.description", "Interrupt all work and exit without saving results");
+            properties.setProperty("command.exit.constraint-violation-message", "");
+
+            PropertyUtils.readFromFile(propertiesPath, properties);
+            return properties;
         }
     }
 
