@@ -57,14 +57,11 @@ public class VariableHolder {
     }
 
     private Variable mapMutableVariableDtoToVariableDto(MutableVariableDto dto) {
-        if (dto.getType() == null) {
-            throw new IllegalStateException("Type must be specified for all variables");
-        }
+        ValidationUtils.requireNonNull(dto.getType(), "Type must be specified for all variables");
         switch (dto.getType()) {
             case VECTOR:
-                if (dto.getVectorLength() < 1) {
-                    throw new IllegalArgumentException("Vector length must be >= 1");
-                }
+                ValidationUtils.requireGreaterOrEqualThan(dto.getVectorLength(), 1,
+                        "Vector length must be >= 1");
                 return new VectorVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
@@ -72,9 +69,8 @@ public class VariableHolder {
                         dto.getConstraintViolationMessage(),
                         dto.getVectorLength());
             case MATRIX:
-                if (dto.getMatrixRowCount() < 1 || dto.getMatrixColumnCount() < 1) {
-                    throw new IllegalArgumentException("Both matrix row count and column count must be >= 1");
-                }
+                ValidationUtils.requireGreaterOrEqualThan(dto.getMatrixRowCount(), 1, "Matrix row count must be >= 1");
+                ValidationUtils.requireGreaterOrEqualThan(dto.getMatrixColumnCount(), 1, "Matrix column count must be >= 1");
                 return new MatrixVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
@@ -83,9 +79,8 @@ public class VariableHolder {
                         dto.getMatrixRowCount(),
                         dto.getMatrixColumnCount());
             case POLYNOMIAL_FUNCTION:
-                if (dto.getMatrixRowCount() < 0) {
-                    throw new IllegalArgumentException("Max polynomial degree must be >= 0");
-                }
+                ValidationUtils.requireGreaterOrEqualThan(dto.getMaxPolynomialDegree(), 0,
+                        "Max polynomial degree must be >= 0");
                 return new PolynomialFunctionVariable(
                         dto.getName(),
                         dto.getType(),

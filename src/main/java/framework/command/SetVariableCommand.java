@@ -88,6 +88,7 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
         variableTypeToValueSupplierMap.put(VariableType.FLOAT, ConsoleUtils::askForFloatRepeatedly);
         variableTypeToValueSupplierMap.put(VariableType.DOUBLE, ConsoleUtils::askForDoubleRepeatedly);
         variableTypeToValueSupplierMap.put(VariableType.COMPLEX_NUMBER, ConsoleUtils::askForComplexNumberRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.INTERVAL, ConsoleUtils::askForIntervalRepeatedly);
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {

@@ -3,6 +3,7 @@ package framework.utils;
 import framework.exception.LaboratoryFrameworkException;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.geometry.euclidean.oned.Interval;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 
@@ -137,6 +138,20 @@ public final class ConsoleUtils {
         return new Complex(real, imaginary);
     }
 
+    public static Interval askForIntervalRepeatedly() {
+        String message = "Input interval in the following format:lower upper";
+        Function<String, Interval> mapper = (s) -> {
+            ValidationUtils.requireNotEmpty(s);
+            String[] parts = s.split(" ");
+            ValidationUtils.requireEquals(parts.length, 1, "Wrong string pattern");
+            double lower = Double.parseDouble(parts[0]);
+            double upper = Double.parseDouble(parts[1]);
+            ValidationUtils.requireGreaterOrEqualThan(upper, lower, "Upper must be >= lower");
+            return new Interval(lower, upper);
+        };
+        return askForObjectRepeatedly(message, mapper, "Invalid input.");
+    }
+
     public static double[] askForDoubleArrayRepeatedly(int length) {
         ValidationUtils.requireGreaterOrEqualThan(length, 1, String.format("Array length must be >= %d", 1));
         String message = String.format("Input %d numbers(double), split by whitespace", length);
@@ -148,9 +163,7 @@ public final class ConsoleUtils {
         ValidationUtils.requireGreaterOrEqualThan(length, 1, String.format("Array length must be >= %d", 1));
         String message = String.format("String must contain %d numbers", length);
         final String[] split = s.split(" ");
-        if (split.length != length) {
-            throw new LaboratoryFrameworkException(message);
-        }
+        ValidationUtils.requireEquals(split.length, length, message);
         double[] values = new double[split.length];
         for (int i = 0; i < split.length; i++) {
             values[i] = Double.parseDouble(split[i]);

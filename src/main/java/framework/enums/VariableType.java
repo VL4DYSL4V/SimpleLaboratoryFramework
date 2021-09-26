@@ -16,6 +16,7 @@ public enum VariableType {
     VECTOR,
     MATRIX,
     POLYNOMIAL_FUNCTION,
-    COMPLEX_NUMBER;
+    COMPLEX_NUMBER,
+    INTERVAL;
 
 }
