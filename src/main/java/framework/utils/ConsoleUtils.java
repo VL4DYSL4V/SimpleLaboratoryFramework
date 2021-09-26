@@ -1,6 +1,8 @@
 package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 
@@ -120,6 +122,19 @@ public final class ConsoleUtils {
             out.setRow(i, row);
         }
         return out;
+    }
+
+    public static PolynomialFunction askForPolynomialFunctionRepeatedly(int maxDegree) {
+        ValidationUtils.requireGreaterOrEqualThan(maxDegree, 0, String.format("Degree must be >= %d", 0));
+        double[] coefficients = askForDoubleArrayRepeatedly(maxDegree + 1);
+        return new PolynomialFunction(coefficients);
+    }
+
+    public static Complex askForComplexNumberRepeatedly() {
+        ConsoleUtils.println("Input real and then imaginary parts");
+        Double real = askForDoubleRepeatedly();
+        Double imaginary = askForDoubleRepeatedly();
+        return new Complex(real, imaginary);
     }
 
     public static double[] askForDoubleArrayRepeatedly(int length) {
