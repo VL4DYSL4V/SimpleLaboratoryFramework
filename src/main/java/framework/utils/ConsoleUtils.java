@@ -146,7 +146,7 @@ public final class ConsoleUtils {
             ValidationUtils.requireEquals(parts.length, 2, "Wrong string pattern");
             double lower = Double.parseDouble(parts[0]);
             double upper = Double.parseDouble(parts[1]);
-            ValidationUtils.requireGreaterOrEqualThan(lower, upper, "Upper must be >= lower");
+            ValidationUtils.requireGreaterOrEqualThan(upper, lower, "Upper must be >= lower");
             return new Interval(lower, upper);
         };
         return askForObjectRepeatedly(message, mapper, "Invalid input.");
