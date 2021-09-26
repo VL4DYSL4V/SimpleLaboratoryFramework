@@ -26,6 +26,10 @@ public enum PropertyName {
     VARIABLE_SUFFIX_TYPE("type"),
     VARIABLE_SUFFIX_CANNOT_BE_SET_FROM_INPUT("cannot-be-set-from-input"),
     VARIABLE_SUFFIX_DESCRIPTION("description"),
+    VARIABLE_SUFFIX_VECTOR_LENGTH("vector-length"),
+    VARIABLE_SUFFIX_POLYNOMIAL_MAX_DEGREE("polynomial-max-degree"),
+    VARIABLE_SUFFIX_MATRIX_ROW_COUNT("matrix-row-count"),
+    VARIABLE_SUFFIX_MATRIX_COLUMN_COUNT("matrix-column-count"),
     VARIABLE_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message");
 
     private final String name;

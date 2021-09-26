@@ -5,6 +5,7 @@ import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ValidationUtils;
 import framework.variable.entity.MatrixVariable;
+import framework.variable.entity.PolynomialFunctionVariable;
 import framework.variable.entity.Variable;
 import framework.variable.entity.VectorVariable;
 import lombok.Data;
@@ -56,19 +57,43 @@ public class VariableHolder {
     }
 
     private Variable mapMutableVariableDtoToVariableDto(MutableVariableDto dto) {
+        if (dto.getType() == null) {
+            throw new IllegalStateException("Type must be specified for all variables");
+        }
         switch (dto.getType()) {
             case VECTOR:
+                if (dto.getVectorLength() < 1) {
+                    throw new IllegalArgumentException("Vector length must be >= 1");
+                }
                 return new VectorVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
                         dto.isCannotBeSetFromInput(),
-                        dto.getConstraintViolationMessage(), 0);
+                        dto.getConstraintViolationMessage(),
+                        dto.getVectorLength());
             case MATRIX:
+                if (dto.getMatrixRowCount() < 1 || dto.getMatrixColumnCount() < 1) {
+                    throw new IllegalArgumentException("Both matrix row count and column count must be >= 1");
+                }
                 return new MatrixVariable(dto.getName(),
                         dto.getType(),
                         dto.getDescription(),
                         dto.isCannotBeSetFromInput(),
-                        dto.getConstraintViolationMessage(), 0, 0);
+                        dto.getConstraintViolationMessage(),
+                        dto.getMatrixRowCount(),
+                        dto.getMatrixColumnCount());
+            case POLYNOMIAL_FUNCTION:
+                if (dto.getMatrixRowCount() < 0) {
+                    throw new IllegalArgumentException("Max polynomial degree must be >= 0");
+                }
+                return new PolynomialFunctionVariable(
+                        dto.getName(),
+                        dto.getType(),
+                        dto.getDescription(),
+                        dto.isCannotBeSetFromInput(),
+                        dto.getConstraintViolationMessage(),
+                        dto.getMaxPolynomialDegree()
+                );
         }
         return new Variable(
                 dto.getName(),
@@ -106,6 +131,14 @@ public class VariableHolder {
             }
         } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_CANNOT_BE_SET_FROM_INPUT.getName())) {
             dto.setCannotBeSetFromInput(Boolean.parseBoolean(value));
+        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_VECTOR_LENGTH.getName())) {
+            dto.setVectorLength(Integer.parseInt(value));
+        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_POLYNOMIAL_MAX_DEGREE.getName())) {
+            dto.setMaxPolynomialDegree(Integer.parseInt(value));
+        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_MATRIX_ROW_COUNT.getName())) {
+            dto.setMatrixRowCount(Integer.parseInt(value));
+        } else if (variable.endsWith(PropertyName.VARIABLE_SUFFIX_MATRIX_COLUMN_COUNT.getName())) {
+            dto.setMatrixColumnCount(Integer.parseInt(value));
         } else {
             throw new LaboratoryFrameworkException(String.format("Unknown key: %s", variable));
         }
@@ -124,6 +157,14 @@ public class VariableHolder {
         private boolean cannotBeSetFromInput;
 
         private String constraintViolationMessage;
+
+        private int vectorLength;
+
+        private int matrixRowCount;
+
+        private int matrixColumnCount;
+
+        private int maxPolynomialDegree;
 
     }
 

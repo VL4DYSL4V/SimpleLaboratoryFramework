@@ -10,9 +10,10 @@ import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
 import framework.variable.entity.MatrixVariable;
+import framework.variable.entity.PolynomialFunctionVariable;
+import framework.variable.entity.Variable;
 import framework.variable.entity.VectorVariable;
 import framework.variable.holder.VariableHolder;
-import framework.variable.entity.Variable;
 import framework.variable.holder.VariableHolderAware;
 import lombok.Setter;
 
@@ -67,6 +68,9 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
             case MATRIX:
                 MatrixVariable matrixVariable = (MatrixVariable) variable;
                 return ConsoleUtils.askForMatrixRepeatedly(matrixVariable.getRowCount(), matrixVariable.getColumnCount());
+            case POLYNOMIAL_FUNCTION:
+                PolynomialFunctionVariable polynomialFunction = (PolynomialFunctionVariable) variable;
+                return ConsoleUtils.askForPolynomialFunctionRepeatedly(polynomialFunction.getMaxDegree());
         }
         return variableTypeToValueSupplierMap.get(variable.getType()).get();
     }
@@ -83,6 +87,7 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
         variableTypeToValueSupplierMap.put(VariableType.CHARACTER, ConsoleUtils::askForCharacterRepeatedly);
         variableTypeToValueSupplierMap.put(VariableType.FLOAT, ConsoleUtils::askForFloatRepeatedly);
         variableTypeToValueSupplierMap.put(VariableType.DOUBLE, ConsoleUtils::askForDoubleRepeatedly);
+        variableTypeToValueSupplierMap.put(VariableType.COMPLEX_NUMBER, ConsoleUtils::askForComplexNumberRepeatedly);
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {

@@ -14,6 +14,8 @@ public enum VariableType {
     DOUBLE,
     STRING,
     VECTOR,
-    MATRIX;
+    MATRIX,
+    POLYNOMIAL_FUNCTION,
+    COMPLEX_NUMBER;
 
 }
