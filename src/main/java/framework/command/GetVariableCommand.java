@@ -12,6 +12,9 @@ import framework.variable.entity.Variable;
 import framework.variable.holder.VariableHolder;
 import framework.variable.holder.VariableHolderAware;
 import lombok.Setter;
+import org.apache.commons.math3.geometry.euclidean.oned.Interval;
+
+import java.util.Objects;
 
 @Setter
 public class GetVariableCommand implements RunnableCommand, ApplicationStateAware,
@@ -39,11 +42,22 @@ public class GetVariableCommand implements RunnableCommand, ApplicationStateAwar
         }
         try {
             Object value = applicationState.getVariable(variableName);
-            ConsoleUtils.println(String.format("%s = %s", variableName, value));
+            ConsoleUtils.println(String.format("%s = %s", variableName, convertToString(value)));
         }
         catch (LaboratoryFrameworkException e) {
             ConsoleUtils.println(e.getMessage());
         }
+    }
+
+    private static String convertToString(Object o) {
+        ValidationUtils.requireNonNull(o);
+        if (Objects.equals(o.getClass(), Interval.class)) {
+            Interval interval = (Interval) o;
+            return "[".concat(String.valueOf(interval.getInf()))
+                    .concat(" - ")
+                    .concat(String.valueOf(interval.getSup())).concat("]");
+        }
+        return o.toString();
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {
