@@ -143,7 +143,7 @@ public final class ConsoleUtils {
         Function<String, Interval> mapper = (s) -> {
             ValidationUtils.requireNotEmpty(s);
             String[] parts = s.split(" ");
-            ValidationUtils.requireEquals(parts.length, 1, "Wrong string pattern");
+            ValidationUtils.requireEquals(parts.length, 2, "Wrong string pattern");
             double lower = Double.parseDouble(parts[0]);
             double upper = Double.parseDouble(parts[1]);
             ValidationUtils.requireGreaterOrEqualThan(lower, upper, "Upper must be >= lower");
