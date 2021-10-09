@@ -2,6 +2,7 @@ package framework.state;
 
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
+import framework.utils.ValidationUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +35,7 @@ public abstract class AbstractApplicationState implements ApplicationState {
     @Override
     public Object getVariable(String variableName) throws LaboratoryFrameworkException {
         final Supplier<Object> getter = variableNameToGetter.get(variableName);
-        if (getter == null) {
-            throw new LaboratoryFrameworkException(String.format("Unknown variable name: %s", variableName));
-        }
+        ValidationUtils.requireNonNull(getter, String.format("Unknown variable name: %s", variableName));
         return getter.get();
     }
 
