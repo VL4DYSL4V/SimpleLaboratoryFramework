@@ -19,6 +19,17 @@ public final class ValidationUtils {
     }
 
     /**
+     * @throws LaboratoryFrameworkException if any of parameters is null
+     */
+    public static void requireNonNull(Object... objects) throws LaboratoryFrameworkException {
+        for (Object o: objects) {
+            if (o == null) {
+                throw new LaboratoryFrameworkException("One of parameters is null");
+            }
+        }
+    }
+
+    /**
      * @throws LaboratoryFrameworkException if given parameter is null with supplied message
      */
     public static void requireNonNull(Object o, String message) throws LaboratoryFrameworkException {

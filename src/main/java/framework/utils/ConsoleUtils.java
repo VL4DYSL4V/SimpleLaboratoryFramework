@@ -6,6 +6,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.geometry.euclidean.oned.Interval;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,6 +37,51 @@ public final class ConsoleUtils {
     public static void println(String s) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(s);
         System.out.println(s);
+    }
+
+    public static void printSystemOfLinearEquations(int precision, RealMatrix matrix,
+                                                    RealVector vector) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNonNull(matrix, vector);
+        ValidationUtils.requireEquals(matrix.getRowDimension(), vector.getDimension(),
+                "Matrix row dimension and vector length must be equal");
+        String rowTemplate = String.format("%%.%df\t", precision).repeat(matrix.getColumnDimension())
+                .concat(String.format("|\t%%.%df", precision));
+        for (int i = 0; i < matrix.getRowDimension(); i++) {
+            double[] rowNumbers = matrix.getRowVector(i).toArray();
+            Double[] args = new Double[rowNumbers.length + 1];
+            for (int j = 0; j < rowNumbers.length; j++) {
+                args[j] = rowNumbers[j];
+            }
+            args[args.length - 1] = vector.getEntry(i);
+            String row = String.format(rowTemplate, (Object[]) args);
+            ConsoleUtils.println(row);
+        }
+    }
+
+    public static void printMatrix(int precision, RealMatrix matrix) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNonNull(matrix);
+        String rowTemplate = String.format("%%.%df\t", precision).repeat(matrix.getColumnDimension());
+        for (int i = 0; i < matrix.getRowDimension(); i++) {
+            double[] rowNumbers = matrix.getRowVector(i).toArray();
+            Double[] args = new Double[rowNumbers.length + 1];
+            for (int j = 0; j < rowNumbers.length; j++) {
+                args[j] = rowNumbers[j];
+            }
+            String row = String.format(rowTemplate, (Object[]) args);
+            ConsoleUtils.println(row);
+        }
+    }
+
+    public static void printVector(int precision, RealVector vector) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNonNull(vector);
+        String rowTemplate = String.format("%%.%df\t", precision).repeat(vector.getDimension());
+        double[] rowNumbers = vector.toArray();
+        Double[] args = new Double[rowNumbers.length];
+        for (int j = 0; j < rowNumbers.length; j++) {
+            args[j] = rowNumbers[j];
+        }
+        String row = String.format(rowTemplate, (Object[]) args);
+        ConsoleUtils.println(row);
     }
 
     public static String readLine() {
