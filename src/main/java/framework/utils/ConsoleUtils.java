@@ -39,13 +39,14 @@ public final class ConsoleUtils {
         System.out.println(s);
     }
 
-    public static void printSystemOfLinearEquations(int precision, RealMatrix matrix,
+    public static void printSystemOfLinearEquations(int numbersAfterPoint, RealMatrix matrix,
                                                     RealVector vector) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(matrix, vector);
+        ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
         ValidationUtils.requireEquals(matrix.getRowDimension(), vector.getDimension(),
                 "Matrix row dimension and vector length must be equal");
-        String rowTemplate = String.format("%%.%df\t", precision).repeat(matrix.getColumnDimension())
-                .concat(String.format("|\t%%.%df", precision));
+        String rowTemplate = String.format("%%.%df\t", numbersAfterPoint).repeat(matrix.getColumnDimension())
+                .concat(String.format("|\t%%.%df", numbersAfterPoint));
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             double[] rowNumbers = matrix.getRowVector(i).toArray();
             Double[] args = new Double[rowNumbers.length + 1];
@@ -58,9 +59,10 @@ public final class ConsoleUtils {
         }
     }
 
-    public static void printMatrix(int precision, RealMatrix matrix) throws LaboratoryFrameworkException {
+    public static void printMatrix(int numbersAfterPoint, RealMatrix matrix) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(matrix);
-        String rowTemplate = String.format("%%.%df\t", precision).repeat(matrix.getColumnDimension());
+        ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
+        String rowTemplate = String.format("%%.%df\t", numbersAfterPoint).repeat(matrix.getColumnDimension());
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             double[] rowNumbers = matrix.getRowVector(i).toArray();
             Double[] args = new Double[rowNumbers.length + 1];
@@ -72,9 +74,10 @@ public final class ConsoleUtils {
         }
     }
 
-    public static void printVector(int precision, RealVector vector) throws LaboratoryFrameworkException {
+    public static void printVector(int numbersAfterPoint, RealVector vector) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(vector);
-        String rowTemplate = String.format("%%.%df\t", precision).repeat(vector.getDimension());
+        ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
+        String rowTemplate = String.format("%%.%df\t", numbersAfterPoint).repeat(vector.getDimension());
         double[] rowNumbers = vector.toArray();
         Double[] args = new Double[rowNumbers.length];
         for (int j = 0; j < rowNumbers.length; j++) {
