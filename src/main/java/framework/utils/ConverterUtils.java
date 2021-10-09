@@ -11,6 +11,14 @@ public final class ConverterUtils {
     private ConverterUtils() {
     }
 
+    public static Double[] doubleArrayFromPrimitives(double[] arr) {
+        Double[] out = new Double[arr.length];
+        for (int j = 0; j < out.length; j++) {
+            out[j] = arr[j];
+        }
+        return out;
+    }
+
     public static Byte byteFromString(String s) throws LaboratoryFrameworkException {
         return convert(s, Byte::parseByte);
     }

@@ -87,6 +87,13 @@ public final class ConsoleUtils {
         ConsoleUtils.println(row);
     }
 
+    public static void printInterval(Interval interval) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNonNull(interval);
+        String rowTemplate = "[%f - %f]";
+        String row = String.format(rowTemplate, interval.getInf());
+        ConsoleUtils.println(row);
+    }
+
     public static String readLine() {
         return new Scanner(System.in).nextLine();
     }

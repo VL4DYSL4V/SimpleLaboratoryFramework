@@ -13,6 +13,8 @@ import framework.variable.holder.VariableHolder;
 import framework.variable.holder.VariableHolderAware;
 import lombok.Setter;
 import org.apache.commons.math3.geometry.euclidean.oned.Interval;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import java.util.Objects;
 
@@ -42,22 +44,31 @@ public class GetVariableCommand implements RunnableCommand, ApplicationStateAwar
         }
         try {
             Object value = applicationState.getVariable(variableName);
-            ConsoleUtils.println(String.format("%s = %s", variableName, convertToString(value)));
+            printVariable(variableName, value);
         }
         catch (LaboratoryFrameworkException e) {
             ConsoleUtils.println(e.getMessage());
         }
     }
 
-    private static String convertToString(Object o) {
-        ValidationUtils.requireNonNull(o);
-        if (Objects.equals(o.getClass(), Interval.class)) {
-            Interval interval = (Interval) o;
-            return "[".concat(String.valueOf(interval.getInf()))
-                    .concat(" - ")
-                    .concat(String.valueOf(interval.getSup())).concat("]");
+    private static void printVariable(String variableName, Object value) {
+        ValidationUtils.requireNonNull(value);
+        if (Objects.equals(value.getClass(), Interval.class)) {
+            Interval interval = (Interval) value;
+            ConsoleUtils.printInterval(interval);
+            return;
         }
-        return o.toString();
+        if (value instanceof RealMatrix) {
+            RealMatrix matrix = (RealMatrix) value;
+            ConsoleUtils.printMatrix(16, matrix);
+            return;
+        }
+        if (value instanceof RealVector) {
+            RealVector vector = (RealVector) value;
+            ConsoleUtils.printVector(16, vector);
+            return;
+        }
+        ConsoleUtils.println(String.format("%s = %s", variableName, value));
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {
