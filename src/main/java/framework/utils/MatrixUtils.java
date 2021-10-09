@@ -1,9 +1,7 @@
 package framework.utils;
 
 import framework.exception.LaboratoryFrameworkException;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.DiagonalMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,5 +51,29 @@ public class MatrixUtils {
         }
         out.setRow(coefficients.length - 1, lastRow);
         return out;
+    }
+
+    public static void swapRows(RealMatrix matrix, int index1, int index2) {
+        ValidationUtils.requireNonNull(matrix);
+        String messageTemplate = "Matrix row dimension must be > index%d";
+        ValidationUtils.requireGreaterThan(matrix.getRowDimension(), index1, String.format(messageTemplate, 1));
+        ValidationUtils.requireGreaterThan(matrix.getRowDimension(), index2, String.format(messageTemplate, 2));
+
+        RealVector row1 = new ArrayRealVector(matrix.getRowVector(index1));
+        RealVector row2 = new ArrayRealVector(matrix.getRowVector(index2));
+        matrix.setRow(index1, row2.toArray());
+        matrix.setRow(index2, row1.toArray());
+    }
+
+    public static void swapColumns(RealMatrix matrix, int index1, int index2) {
+        ValidationUtils.requireNonNull(matrix);
+        String messageTemplate = "Matrix column dimension must be > index%d";
+        ValidationUtils.requireGreaterThan(matrix.getColumnDimension(), index1, String.format(messageTemplate, 1));
+        ValidationUtils.requireGreaterThan(matrix.getColumnDimension(), index2, String.format(messageTemplate, 2));
+
+        RealVector column1 = new ArrayRealVector(matrix.getColumn(index1));
+        RealVector column2 = new ArrayRealVector(matrix.getColumn(index2));
+        matrix.setColumn(index1, column2.toArray());
+        matrix.setColumn(index2, column1.toArray());
     }
 }
