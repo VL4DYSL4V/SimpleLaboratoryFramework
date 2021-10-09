@@ -118,14 +118,10 @@ public class Application {
             Properties properties = new Properties();
 
             properties.setProperty("command.help.name", "help");
-            properties.setProperty("command.help.arity", "0");
             properties.setProperty("command.help.description", "Prints all commands with arity and description");
-            properties.setProperty("command.help.constraint-violation-message", "");
 
             properties.setProperty("command.greet.name", "greet");
-            properties.setProperty("command.greet.arity", "0");
             properties.setProperty("command.greet.description", "Prints greetings");
-            properties.setProperty("command.greet.constraint-violation-message", "");
 
             properties.setProperty("command.get.name", "get");
             properties.setProperty("command.get.arity", "1");
@@ -138,9 +134,7 @@ public class Application {
             properties.setProperty("command.set.constraint-violation-message", "Command requires 1 argument: the name of variable to be set");
 
             properties.setProperty("command.exit.name", "exit");
-            properties.setProperty("command.exit.arity", "0");
             properties.setProperty("command.exit.description", "Interrupt all work and exit without saving results");
-            properties.setProperty("command.exit.constraint-violation-message", "");
 
             PropertyUtils.readFromFile(propertiesPath, properties);
             return properties;
