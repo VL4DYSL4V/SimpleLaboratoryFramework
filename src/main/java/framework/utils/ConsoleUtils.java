@@ -77,7 +77,17 @@ public final class ConsoleUtils {
     public static void printVector(int numbersAfterPoint, RealVector vector) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(vector);
         ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
-        String rowTemplate = String.format("%%.%df\t", numbersAfterPoint).repeat(vector.getDimension());
+        printVector(".".concat(String.valueOf(numbersAfterPoint)), vector);
+    }
+
+    public static void printVector(RealVector vector) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNonNull(vector);
+        printVector("", vector);
+    }
+
+    private static void printVector(String numbersAfterPointPattern, RealVector vector) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNonNull(vector);
+        String rowTemplate = String.format("%%%sf\t", numbersAfterPointPattern).repeat(vector.getDimension());
         double[] rowNumbers = vector.toArray();
         Double[] args = new Double[rowNumbers.length];
         for (int j = 0; j < rowNumbers.length; j++) {
