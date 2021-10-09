@@ -30,7 +30,7 @@ public abstract class AbstractApplicationState implements ApplicationState {
         setter.accept(variableName, value);
     }
 
-    protected abstract void initVariableNameToSettersMap();
+    protected void initVariableNameToSettersMap(){}
 
     @Override
     public Object getVariable(String variableName) throws LaboratoryFrameworkException {
@@ -39,5 +39,5 @@ public abstract class AbstractApplicationState implements ApplicationState {
         return getter.get();
     }
 
-    protected abstract void initVariableNameToGettersMap();
+    protected void initVariableNameToGettersMap(){}
 }
