@@ -30,14 +30,24 @@ public final class ValidationUtils {
     }
 
     public static void requireTrue(boolean b) throws LaboratoryFrameworkException {
+        requireTrue(b, "Given parameter must be true");
+    }
+
+    public static void requireTrue(boolean b, String message) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNotEmpty(message);
         if (!b) {
-            throw new LaboratoryFrameworkException("Given parameter must be true");
+            throw new LaboratoryFrameworkException(message);
         }
     }
 
     public static void requireFalse(boolean b) throws LaboratoryFrameworkException {
+        requireFalse(b, "Given parameter must be false");
+    }
+
+    public static void requireFalse(boolean b, String message) throws LaboratoryFrameworkException {
+        ValidationUtils.requireNotEmpty(message);
         if (b) {
-            throw new LaboratoryFrameworkException("Given parameter must be false");
+            throw new LaboratoryFrameworkException(message);
         }
     }
 

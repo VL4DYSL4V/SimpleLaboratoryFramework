@@ -45,7 +45,7 @@ public class CommandsParser {
     private static Command mapMutableCommandDtoToCommandDto(MutableCommandDto dto) {
         return new Command(
                 dto.getName(),
-                dto.getArity(),
+                dto.getOptions(),
                 dto.getDescription(),
                 dto.getConstraintViolationMessage());
     }
@@ -64,10 +64,9 @@ public class CommandsParser {
         if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_NAME.getName())) {
             ValidationUtils.requireNotEmpty(value, "Name must be specified");
             dto.setName(value);
-        } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_ARITY.getName())) {
-            int arity = Integer.parseInt(value);
-            ValidationUtils.requireGreaterOrEqualThan(arity, 0, "Arity must be >= 0");
-            dto.setArity(Integer.parseInt(value));
+        } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_OPTIONS.getName())) {
+            Set<String> options = Arrays.stream(value.split(",")).collect(Collectors.toSet());
+            dto.setOptions(options);
         } else if (commandKey.endsWith(PropertyName.COMMAND_SUFFIX_DESCRIPTION.getName())) {
             ValidationUtils.requireNotEmpty(value, "Description must be provided");
             dto.setDescription(value);
@@ -83,7 +82,7 @@ public class CommandsParser {
 
         private String name;
 
-        private int arity = 0;
+        private Set<String> options = new HashSet<>();
 
         private String description = "";
 

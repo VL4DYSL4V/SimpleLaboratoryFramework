@@ -17,7 +17,7 @@ public enum PropertyName {
     APPLICATION_DESCRIPTION("application.description"),
     COMMAND_PREFIX("command"),
     COMMAND_SUFFIX_NAME("name"),
-    COMMAND_SUFFIX_ARITY("arity"),
+    COMMAND_SUFFIX_OPTIONS("options"),
     COMMAND_SUFFIX_DESCRIPTION("description"),
     COMMAND_SUFFIX_CONSTRAINT_VIOLATION_MESSAGE("constraint-violation-message"),
 

@@ -40,7 +40,7 @@ public class Application {
     private void listenForTheInput() {
         String input = ConsoleUtils.readLine().trim();
         if (!input.isEmpty()) {
-            String[] parts = input.split(" ");
+            String[] parts = input.split("\\s+");
             String[] args = new String[parts.length - 1];
             System.arraycopy(parts, 1, args, 0, args.length);
             executeCommand(parts[0], args);
@@ -124,12 +124,12 @@ public class Application {
             properties.setProperty("command.greet.description", "Prints greetings");
 
             properties.setProperty("command.get.name", "get");
-            properties.setProperty("command.get.arity", "1");
+            properties.setProperty("command.get.options", "var,precision");
             properties.setProperty("command.get.description", "Returns value of variable with supplied name. Example: get variable-name");
             properties.setProperty("command.get.constraint-violation-message", "Command requires 1 argument: the name of variable to get");
 
             properties.setProperty("command.set.name", "set");
-            properties.setProperty("command.set.arity", "1");
+            properties.setProperty("command.set.options", "var");
             properties.setProperty("command.set.description", "Invokes setting variable mechanism. Example: set variable-name");
             properties.setProperty("command.set.constraint-violation-message", "Command requires 1 argument: the name of variable to be set");
 

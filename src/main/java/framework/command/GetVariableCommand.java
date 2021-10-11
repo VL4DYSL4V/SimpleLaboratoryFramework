@@ -3,10 +3,12 @@ package framework.command;
 import framework.command.entity.Command;
 import framework.command.holder.CommandHolder;
 import framework.command.holder.CommandHolderAware;
+import framework.command.parser.ArgsParser;
 import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
 import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
+import framework.utils.ConverterUtils;
 import framework.utils.ValidationUtils;
 import framework.variable.entity.Variable;
 import framework.variable.holder.VariableHolder;
@@ -16,6 +18,7 @@ import org.apache.commons.math3.geometry.euclidean.oned.Interval;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Setter
@@ -31,27 +34,34 @@ public class GetVariableCommand implements RunnableCommand, ApplicationStateAwar
     @Override
     public void execute(String[] args) {
         assertFieldsArePresent();
-        if (args.length != 1) {
-            Command runnableCommand = commandHolder.getCommand("get");
-            ConsoleUtils.println(runnableCommand.getConstraintViolationMessage());
-            return;
-        }
-        String variableName = args[0];
-        Variable variable = variableHolder.getVariable(variableName);
-        if (variable == null) {
-            ConsoleUtils.println("Unknown variable");
-            return;
-        }
         try {
-            Object value = applicationState.getVariable(variableName);
-            printVariable(variableName, value);
-        }
-        catch (LaboratoryFrameworkException e) {
-            ConsoleUtils.println(e.getMessage());
+            Map<String, String> parsedArgs = ArgsParser.parseArgs(args);
+            String variableName = parsedArgs.get("var");
+            if (assertVariableIsKnown(variableName)) {
+                Object value = applicationState.getVariable(variableName);
+                int precision = getPrecision(parsedArgs);
+                printVariable(variableName, precision, value);
+            }
+        } catch (LaboratoryFrameworkException ex) {
+            ConsoleUtils.println(ex.getMessage());
         }
     }
 
-    private static void printVariable(String variableName, Object value) {
+    private boolean assertVariableIsKnown(String variableName) {
+        if (variableName == null) {
+            Command runnableCommand = commandHolder.getCommand("get");
+            ConsoleUtils.println(runnableCommand.getConstraintViolationMessage());
+            return false;
+        }
+        Variable variable = variableHolder.getVariable(variableName);
+        if (variable == null) {
+            ConsoleUtils.println("Unknown variable");
+            return false;
+        }
+        return true;
+    }
+
+    private static void printVariable(String variableName, int precision, Object value) {
         ValidationUtils.requireNonNull(value);
         if (Objects.equals(value.getClass(), Interval.class)) {
             Interval interval = (Interval) value;
@@ -60,15 +70,23 @@ public class GetVariableCommand implements RunnableCommand, ApplicationStateAwar
         }
         if (value instanceof RealMatrix) {
             RealMatrix matrix = (RealMatrix) value;
-            ConsoleUtils.printMatrix(16, matrix);
+            ConsoleUtils.printMatrix(precision, matrix);
             return;
         }
         if (value instanceof RealVector) {
             RealVector vector = (RealVector) value;
-            ConsoleUtils.printVector(16, vector);
+            ConsoleUtils.printVector(precision, vector);
             return;
         }
         ConsoleUtils.println(String.format("%s = %s", variableName, value));
+    }
+
+    private int getPrecision(Map<String, String> parsedArgs) {
+        String precision = parsedArgs.get("precision");
+        if (precision == null) {
+            return 3;
+        }
+        return ConverterUtils.integerFromString(precision);
     }
 
     private void assertFieldsArePresent() throws LaboratoryFrameworkException {

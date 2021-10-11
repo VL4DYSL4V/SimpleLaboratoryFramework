@@ -3,6 +3,7 @@ package framework.command;
 import framework.command.entity.Command;
 import framework.command.holder.CommandHolder;
 import framework.command.holder.CommandHolderAware;
+import framework.command.parser.ArgsParser;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
@@ -19,6 +20,7 @@ import lombok.Setter;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @Setter
@@ -41,13 +43,13 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
     @Override
     public void execute(String[] args) {
         assertFieldsArePresent();
-        if (args.length != 1) {
+        Optional<String> variableNameHolder = getVariableNameFromArgs(args);
+        if (variableNameHolder.isEmpty()) {
             Command runnableCommand = commandHolder.getCommand("set");
             ConsoleUtils.println(runnableCommand.getConstraintViolationMessage());
             return;
         }
-        String variableName = args[0];
-        Variable variable = variableHolder.getVariable(variableName);
+        Variable variable = variableHolder.getVariable(variableNameHolder.get());
         if (variable == null) {
             ConsoleUtils.println("Unknown variable");
             return;
@@ -57,7 +59,21 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
             return;
         }
         Object result = getValueForValue(variable);
-        applicationState.setVariable(variableName, result);
+        applicationState.setVariable(variableNameHolder.get(), result);
+    }
+
+    private Optional<String> getVariableNameFromArgs(String[] args) {
+        Map<String, String> parsedArgs;
+        try {
+            parsedArgs = ArgsParser.parseArgs(args);
+        } catch (LaboratoryFrameworkException ex) {
+            ConsoleUtils.println(ex.getMessage());
+            return Optional.empty();
+        }
+        Command runnableCommand = commandHolder.getCommand("set");
+        String paramName = runnableCommand.getOptions().iterator().next();
+        String variableName = parsedArgs.get(paramName);
+        return Optional.ofNullable(variableName);
     }
 
     private Object getValueForValue(Variable variable) {
