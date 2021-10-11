@@ -29,6 +29,18 @@ public final class ValidationUtils {
         }
     }
 
+    public static void requireTrue(boolean b) throws LaboratoryFrameworkException {
+        if (!b) {
+            throw new LaboratoryFrameworkException("Given parameter must be true");
+        }
+    }
+
+    public static void requireFalse(boolean b) throws LaboratoryFrameworkException {
+        if (b) {
+            throw new LaboratoryFrameworkException("Given parameter must be false");
+        }
+    }
+
     /**
      * @throws LaboratoryFrameworkException if given parameter is null with supplied message
      */
