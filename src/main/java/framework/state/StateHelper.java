@@ -15,14 +15,14 @@ public final class StateHelper {
 
     private static <T> void defaultSet(String variableName, String expectedName,
                                       Object rawValue, Class<T> expectedClass,
-                                      Function<Object, T> classCastingFunction, Consumer<T> actualSetter) {
+                                       Consumer<T> actualSetter) {
         if (Objects.equals(expectedName, variableName)) {
             if (rawValue == null) {
                 ConsoleUtils.println("Cannot set null");
                 return;
             }
             if (expectedClass.isAssignableFrom(rawValue.getClass())) {
-                T casted = classCastingFunction.apply(rawValue);
+                T casted = expectedClass.cast(rawValue);
                 actualSetter.accept(casted);
             } else {
                 ConsoleUtils.println("Invalid type");
@@ -32,9 +32,8 @@ public final class StateHelper {
         }
     }
 
-    public static <T> BiConsumer<String, Object> getDefaultSetter(String expectedName, Class<T> expectedClass,
-                                                                  Function<Object, T> classCastingFunction, Consumer<T> actualSetter) {
-        ValidationUtils.requireNonNull(expectedName, expectedClass, classCastingFunction, actualSetter);
-        return (name, value) -> defaultSet(name, expectedName, value, expectedClass, classCastingFunction, actualSetter);
+    public static <T> BiConsumer<String, Object> getDefaultSetter(String expectedName, Class<T> expectedClass, Consumer<T> actualSetter) {
+        ValidationUtils.requireNonNull(expectedName, expectedClass, actualSetter);
+        return (name, value) -> defaultSet(name, expectedName, value, expectedClass, actualSetter);
     }
 }
