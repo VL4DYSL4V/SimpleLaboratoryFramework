@@ -12,7 +12,7 @@ public final class StateHelper {
     private StateHelper() {
     }
 
-    public static <T> void defaultSet(String variableName, String expectedName,
+    private static <T> void defaultSet(String variableName, String expectedName,
                                       Object rawValue, Class<T> expectedClass,
                                       Function<Object, T> classCastingFunction, Consumer<T> actualSetter) {
         if (Objects.equals(expectedName, variableName)) {
