@@ -1,9 +1,6 @@
 package framework.command;
 
 import framework.command.entity.Command;
-import framework.command.holder.CommandHolder;
-import framework.command.holder.CommandHolderAware;
-import framework.command.parser.ArgsParser;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
@@ -24,10 +21,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @Setter
-public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
-        CommandHolderAware, ApplicationStateAware {
-
-    private CommandHolder commandHolder;
+public class SetVariableCommand extends AbstractRunnableCommand
+        implements ApplicationStateAware, VariableHolderAware {
 
     private VariableHolder variableHolder;
 
@@ -37,6 +32,7 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
             new EnumMap<>(VariableType.class);
 
     public SetVariableCommand() {
+        super("set");
         setValueSuppliers();
     }
 
@@ -65,7 +61,7 @@ public class SetVariableCommand implements RunnableCommand, VariableHolderAware,
     private Optional<String> getVariableNameFromArgs(String[] args) {
         Map<String, String> parsedArgs;
         try {
-            parsedArgs = ArgsParser.parseArgs(args);
+            parsedArgs = parseArgs(args);
         } catch (LaboratoryFrameworkException ex) {
             ConsoleUtils.println(ex.getMessage());
             return Optional.empty();

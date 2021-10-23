@@ -1,9 +1,6 @@
 package framework.command;
 
 import framework.command.entity.Command;
-import framework.command.holder.CommandHolder;
-import framework.command.holder.CommandHolderAware;
-import framework.command.parser.ArgsParser;
 import framework.exception.LaboratoryFrameworkException;
 import framework.state.ApplicationState;
 import framework.state.ApplicationStateAware;
@@ -22,20 +19,22 @@ import java.util.Map;
 import java.util.Objects;
 
 @Setter
-public class GetVariableCommand implements RunnableCommand, ApplicationStateAware,
-        VariableHolderAware, CommandHolderAware {
+public class GetVariableCommand extends AbstractRunnableCommand
+        implements ApplicationStateAware, VariableHolderAware {
 
     private ApplicationState applicationState;
 
     private VariableHolder variableHolder;
 
-    private CommandHolder commandHolder;
+    public GetVariableCommand() {
+        super("get");
+    }
 
     @Override
     public void execute(String[] args) {
         assertFieldsArePresent();
         try {
-            Map<String, String> parsedArgs = ArgsParser.parseArgs(args);
+            Map<String, String> parsedArgs = parseArgs(args);
             String variableName = parsedArgs.get("var");
             if (assertVariableIsKnown(variableName)) {
                 Object value = applicationState.getVariable(variableName);
