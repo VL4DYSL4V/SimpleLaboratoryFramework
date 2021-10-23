@@ -17,7 +17,7 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-math.version>3.6.1</commons-math.version>
         <findbugs.version>3.0.2</findbugs.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.22</lombok.version>
         <xchart.version>3.8.1</xchart.version>
     </properties>
 
@@ -27,7 +27,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
         <dependency>
