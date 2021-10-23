@@ -39,8 +39,7 @@ public final class ConsoleUtils {
         System.out.println(s);
     }
 
-    public static void printSystemOfLinearEquations(int numbersAfterPoint, RealMatrix matrix,
-                                                    RealVector vector) throws LaboratoryFrameworkException {
+    public static void printSystemOfLinearEquations(RealMatrix matrix, RealVector vector, int numbersAfterPoint) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(matrix, vector);
         ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
         ValidationUtils.requireEquals(matrix.getRowDimension(), vector.getDimension(),
@@ -59,7 +58,7 @@ public final class ConsoleUtils {
         }
     }
 
-    public static void printMatrix(int numbersAfterPoint, RealMatrix matrix) throws LaboratoryFrameworkException {
+    public static void printMatrix(RealMatrix matrix, int numbersAfterPoint) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(matrix);
         ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
         String rowTemplate = String.format("%%.%df\t", numbersAfterPoint).repeat(matrix.getColumnDimension());
@@ -74,18 +73,18 @@ public final class ConsoleUtils {
         }
     }
 
-    public static void printVector(int numbersAfterPoint, RealVector vector) throws LaboratoryFrameworkException {
+    public static void printVector(RealVector vector, int numbersAfterPoint) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(vector);
         ValidationUtils.requireGreaterOrEqualThan(numbersAfterPoint, 0, "numbersAfterPoint must be >= 0");
-        printVector(".".concat(String.valueOf(numbersAfterPoint)), vector);
+        printVector(vector, ".".concat(String.valueOf(numbersAfterPoint)));
     }
 
     public static void printVector(RealVector vector) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(vector);
-        printVector("", vector);
+        printVector(vector, "");
     }
 
-    private static void printVector(String numbersAfterPointPattern, RealVector vector) throws LaboratoryFrameworkException {
+    private static void printVector(RealVector vector, String numbersAfterPointPattern) throws LaboratoryFrameworkException {
         ValidationUtils.requireNonNull(vector);
         String rowTemplate = String.format("%%%sf\t", numbersAfterPointPattern).repeat(vector.getDimension());
         double[] rowNumbers = vector.toArray();

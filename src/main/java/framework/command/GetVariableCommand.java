@@ -65,12 +65,12 @@ public class GetVariableCommand extends AbstractRunnableCommand
         }
         if (value instanceof RealMatrix) {
             RealMatrix matrix = (RealMatrix) value;
-            ConsoleUtils.printMatrix(precision, matrix);
+            ConsoleUtils.printMatrix(matrix, precision);
             return;
         }
         if (value instanceof RealVector) {
             RealVector vector = (RealVector) value;
-            ConsoleUtils.printVector(precision, vector);
+            ConsoleUtils.printVector(vector, precision);
             return;
         }
         ConsoleUtils.println(String.format("%s = %s", variableName, value));
