@@ -6,7 +6,6 @@ import framework.utils.ValidationUtils;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public final class StateHelper {
 
@@ -14,7 +13,7 @@ public final class StateHelper {
     }
 
     private static <T> void defaultSet(String variableName, String expectedName,
-                                      Object rawValue, Class<T> expectedClass,
+                                       Object rawValue, Class<T> expectedClass,
                                        Consumer<T> actualSetter) {
         if (Objects.equals(expectedName, variableName)) {
             if (rawValue == null) {
