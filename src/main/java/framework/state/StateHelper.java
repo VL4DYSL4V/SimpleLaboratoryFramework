@@ -3,6 +3,7 @@ package framework.state;
 import framework.utils.ConsoleUtils;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -26,4 +27,8 @@ public final class StateHelper {
         }
     }
 
+    public static <T> BiConsumer<String, T> getDefaultSetter(String expectedName, Class<T> expectedClass,
+                                                                  Function<Object, T> classCastingFunction, Consumer<T> actualSetter) {
+        return (name, value) -> defaultSet(name, expectedName, value, expectedClass, classCastingFunction, actualSetter);
+    }
 }
