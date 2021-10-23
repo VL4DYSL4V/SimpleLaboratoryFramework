@@ -3,17 +3,22 @@ package framework.state;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
+import framework.variable.holder.VariableHolder;
+import framework.variable.holder.VariableHolderAware;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractApplicationState implements ApplicationState {
+public abstract class AbstractApplicationState implements ApplicationState,
+        VariableHolderAware {
 
     protected final Map<String, BiConsumer<String, Object>> variableNameToSetter = new HashMap<>();
 
     protected final Map<String, Supplier<Object>> variableNameToGetter = new HashMap<>();
+
+    protected VariableHolder variableHolder;
 
     public AbstractApplicationState() {
         initVariableNameToSettersMap();
@@ -40,4 +45,10 @@ public abstract class AbstractApplicationState implements ApplicationState {
     }
 
     protected void initVariableNameToGettersMap(){}
+
+    @Override
+    public void setVariableHolder(VariableHolder holder) {
+        ValidationUtils.requireNonNull(holder);
+        this.variableHolder = holder;
+    }
 }
