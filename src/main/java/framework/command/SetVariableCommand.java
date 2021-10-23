@@ -3,8 +3,6 @@ package framework.command;
 import framework.command.entity.Command;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
-import framework.state.ApplicationState;
-import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
 import framework.utils.ValidationUtils;
 import framework.variable.entity.MatrixVariable;
@@ -22,11 +20,9 @@ import java.util.function.Supplier;
 
 @Setter
 public class SetVariableCommand extends AbstractRunnableCommand
-        implements ApplicationStateAware, VariableHolderAware {
+        implements VariableHolderAware {
 
     private VariableHolder variableHolder;
-
-    private ApplicationState applicationState;
 
     private final Map<VariableType, Supplier<Object>> variableTypeToValueSupplierMap =
             new EnumMap<>(VariableType.class);

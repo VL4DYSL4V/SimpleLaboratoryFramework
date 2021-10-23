@@ -2,8 +2,6 @@ package framework.command;
 
 import framework.command.entity.Command;
 import framework.exception.LaboratoryFrameworkException;
-import framework.state.ApplicationState;
-import framework.state.ApplicationStateAware;
 import framework.utils.ConsoleUtils;
 import framework.utils.ConverterUtils;
 import framework.utils.ValidationUtils;
@@ -20,9 +18,7 @@ import java.util.Objects;
 
 @Setter
 public class GetVariableCommand extends AbstractRunnableCommand
-        implements ApplicationStateAware, VariableHolderAware {
-
-    private ApplicationState applicationState;
+        implements VariableHolderAware {
 
     private VariableHolder variableHolder;
 
