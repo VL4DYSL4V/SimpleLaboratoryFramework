@@ -1,6 +1,7 @@
 package framework.state;
 
 import framework.utils.ConsoleUtils;
+import framework.utils.ValidationUtils;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -16,7 +17,11 @@ public final class StateHelper {
                                       Object rawValue, Class<T> expectedClass,
                                       Function<Object, T> classCastingFunction, Consumer<T> actualSetter) {
         if (Objects.equals(expectedName, variableName)) {
-            if (Objects.equals(expectedClass, rawValue.getClass())) {
+            if (rawValue == null) {
+                ConsoleUtils.println("Cannot set null");
+                return;
+            }
+            if (expectedClass.isAssignableFrom(rawValue.getClass())) {
                 T casted = classCastingFunction.apply(rawValue);
                 actualSetter.accept(casted);
             } else {
@@ -29,6 +34,7 @@ public final class StateHelper {
 
     public static <T> BiConsumer<String, Object> getDefaultSetter(String expectedName, Class<T> expectedClass,
                                                                   Function<Object, T> classCastingFunction, Consumer<T> actualSetter) {
+        ValidationUtils.requireNonNull(expectedName, expectedClass, classCastingFunction, actualSetter);
         return (name, value) -> defaultSet(name, expectedName, value, expectedClass, classCastingFunction, actualSetter);
     }
 }
