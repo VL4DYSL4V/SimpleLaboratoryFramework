@@ -129,7 +129,9 @@ public class ApplicationInfoPrinter implements CommandHolderAware, VariableHolde
                 .forEach(e -> {
                     destination.append(String.format("* %s:%n", e.getName()));
                     destination.append(String.format("\tDescription: %s%n", e.getDescription()));
-                    destination.append(String.format("\tOptions: %s%n", String.join(", ", e.getOptions())));
+                    if (!e.getOptions().isEmpty()) {
+                        destination.append(String.format("\tOptions: %s%n", String.join(", ", e.getOptions())));
+                    }
                 });
         destination.append(System.lineSeparator());
     }

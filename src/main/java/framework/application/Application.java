@@ -39,18 +39,14 @@ public class Application {
     }
 
     private void listenForTheInput() {
-        try {
-            String input = ConsoleUtils.readLine().trim();
-            if (!input.isEmpty()) {
-                String[] parts = input.split("\\s+");
-                if (parts.length > 0) {
-                    String[] args = new String[parts.length - 1];
-                    System.arraycopy(parts, 1, args, 0, args.length);
-                    executeCommand(parts[0], args);
-                }
+        String input = ConsoleUtils.readLine().trim();
+        if (!input.isEmpty()) {
+            String[] parts = input.split("\\s+");
+            if (parts.length > 0) {
+                String[] args = new String[parts.length - 1];
+                System.arraycopy(parts, 1, args, 0, args.length);
+                executeCommand(parts[0], args);
             }
-        } catch (NoSuchElementException ignored) {
-            // Just continue listening
         }
     }
 
