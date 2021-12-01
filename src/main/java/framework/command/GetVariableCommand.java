@@ -1,6 +1,10 @@
 package framework.command;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import framework.command.entity.Command;
+import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
 import framework.utils.ConverterUtils;
@@ -56,7 +60,7 @@ public class GetVariableCommand extends AbstractRunnableCommand
         return true;
     }
 
-    private static void printVariable(String variableName, int precision, Object value) {
+    private void printVariable(String variableName, int precision, Object value) {
         ValidationUtils.requireNonNull(value);
         if (Objects.equals(value.getClass(), Interval.class)) {
             Interval interval = (Interval) value;
@@ -72,6 +76,16 @@ public class GetVariableCommand extends AbstractRunnableCommand
             RealVector vector = (RealVector) value;
             ConsoleUtils.printVector(vector, precision);
             return;
+        }
+        if (variableHolder.getVariable(variableName).getType() == VariableType.OBJECT) {
+            ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            try {
+                String s = objectMapper.writeValueAsString(value);
+                ConsoleUtils.println(s);
+                return;
+            } catch (JsonProcessingException e) {
+                throw new LaboratoryFrameworkException(e);
+            }
         }
         ConsoleUtils.println(String.format("%s = %s", variableName, value));
     }

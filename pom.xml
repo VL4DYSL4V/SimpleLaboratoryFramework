@@ -17,6 +17,7 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-math.version>3.6.1</commons-math.version>
         <findbugs.version>3.0.2</findbugs.version>
+        <jackson.version>2.13.0</jackson.version>
         <lombok.version>1.18.22</lombok.version>
         <xchart.version>3.8.1</xchart.version>
     </properties>
@@ -53,6 +54,20 @@
             <groupId>org.knowm.xchart</groupId>
             <artifactId>xchart</artifactId>
             <version>${xchart.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
     </dependencies>

@@ -46,7 +46,7 @@ public class SetVariableCommand extends AbstractRunnableCommand
             ConsoleUtils.println("Unknown variable");
             return;
         }
-        if (variable.isCannotBeSetFromInput()) {
+        if (variable.isCannotBeSetFromInput() || variable.getType() == VariableType.OBJECT) {
             ConsoleUtils.println("You cannot set this variable from input");
             return;
         }
