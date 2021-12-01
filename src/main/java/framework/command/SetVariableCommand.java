@@ -1,6 +1,5 @@
 package framework.command;
 
-import framework.command.entity.Command;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
@@ -13,9 +12,8 @@ import framework.variable.holder.VariableHolder;
 import framework.variable.holder.VariableHolderAware;
 import lombok.Setter;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Optional;
+import javax.annotation.Nonnull;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Setter
@@ -37,7 +35,7 @@ public class SetVariableCommand extends AbstractRunnableCommand
         assertFieldsArePresent();
         Optional<String> variableNameHolder = getVariableNameFromArgs(args);
         if (variableNameHolder.isEmpty()) {
-            Command runnableCommand = commandHolder.getCommand("set");
+            NamedCommand runnableCommand = commandHolder.getCommand("set");
             ConsoleUtils.println(runnableCommand.getConstraintViolationMessage());
             return;
         }
@@ -54,6 +52,26 @@ public class SetVariableCommand extends AbstractRunnableCommand
         applicationState.setVariable(variableNameHolder.get(), result);
     }
 
+    @Nonnull
+    @Override
+    public String getDescription() {
+        return "Invokes setting variable mechanism. Example: set variable-name";
+    }
+
+    @Nonnull
+    @Override
+    public Set<String> getOptions() {
+        Set<String> options = new HashSet<>();
+        options.add("var");
+        return options;
+    }
+
+    @Nonnull
+    @Override
+    public String getConstraintViolationMessage() {
+        return "Command requires 1 argument: the name of variable to be set";
+    }
+
     private Optional<String> getVariableNameFromArgs(String[] args) {
         Map<String, String> parsedArgs;
         try {
@@ -62,7 +80,7 @@ public class SetVariableCommand extends AbstractRunnableCommand
             ConsoleUtils.println(ex.getMessage());
             return Optional.empty();
         }
-        Command runnableCommand = commandHolder.getCommand("set");
+        NamedCommand runnableCommand = commandHolder.getCommand("set");
         String paramName = runnableCommand.getOptions().iterator().next();
         String variableName = parsedArgs.get(paramName);
         return Optional.ofNullable(variableName);

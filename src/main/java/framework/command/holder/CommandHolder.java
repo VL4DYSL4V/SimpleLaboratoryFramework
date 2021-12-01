@@ -1,32 +1,27 @@
 package framework.command.holder;
 
-import framework.command.entity.Command;
-import framework.command.parser.CommandsParser;
+import framework.command.NamedCommand;
 import lombok.Getter;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Class holds a map of command names to {@link Command}
+ * Class holds a map of command names to {@link NamedCommand}
  */
 @ThreadSafe
 @Getter
 public final class CommandHolder {
 
-    private final Map<String, Command> commands;
+    private final Map<String, ? extends NamedCommand> commands;
 
-    private final Object lock = new Object();
-
-    public CommandHolder(Properties applicationProperties) {
-        this.commands = CommandsParser.getCommandNameToCommand(applicationProperties);
+    public CommandHolder(Map<String, ? extends NamedCommand> commands) {
+        this.commands = new ConcurrentHashMap<>(commands);
     }
 
-    public Command getCommand(String commandName) {
-        synchronized (lock) {
-            return commands.get(commandName);
-        }
+    public NamedCommand getCommand(String commandName) {
+        return commands.get(commandName);
     }
 
 }

@@ -41,9 +41,11 @@ public class Application {
         String input = ConsoleUtils.readLine().trim();
         if (!input.isEmpty()) {
             String[] parts = input.split("\\s+");
-            String[] args = new String[parts.length - 1];
-            System.arraycopy(parts, 1, args, 0, args.length);
-            executeCommand(parts[0], args);
+            if (parts.length > 0) {
+                String[] args = new String[parts.length - 1];
+                System.arraycopy(parts, 1, args, 0, args.length);
+                executeCommand(parts[0], args);
+            }
         }
     }
 
@@ -58,41 +60,42 @@ public class Application {
 
     public static final class ApplicationBuilder {
 
-        private final Properties applicationProperties;
+        private static final String DEFAULT_PROPERTY_PATH_STRING = "/laboratory.properties";
+
+        private final String propertiesPath;
 
         private final ApplicationState state;
 
-        private final VariableHolder variableHolder;
-
-        private final CommandHolder commandHolder;
-
-        private final ApplicationInfoPrinter infoPrinter;
-
         private final Map<String, RunnableCommand> commands = new ConcurrentHashMap<>();
+
+        private VariableHolder variableHolder;
+
+        private CommandHolder commandHolder;
+
+        private ApplicationInfoPrinter infoPrinter;
+
+        public ApplicationBuilder(ApplicationState state) throws LaboratoryFrameworkException {
+            this(DEFAULT_PROPERTY_PATH_STRING, state);
+        }
 
         /**
          * @param propertiesPath - Path in classpath resources to .properties configuration file
          * @throws LaboratoryFrameworkException if loading properties has failed
          */
         public ApplicationBuilder(String propertiesPath, ApplicationState state) throws LaboratoryFrameworkException {
+            this.propertiesPath = propertiesPath;
             this.state = state;
-            this.applicationProperties = getProperties(propertiesPath);
-            this.variableHolder = new VariableHolder(applicationProperties);
-            this.commandHolder = new CommandHolder(applicationProperties);
-            this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandHolder, variableHolder);
-            injectHolders(state);
         }
 
-        public ApplicationBuilder addCommand(String commandName, RunnableCommand runnableCommand) {
-            commands.put(commandName, runnableCommand);
-            injectHolders(runnableCommand);
-            if (runnableCommand instanceof ApplicationStateAware) {
-                ((ApplicationStateAware) runnableCommand).setApplicationState(state);
-            }
+        public ApplicationBuilder addCommand(RunnableCommand command) {
+            commands.put(command.getName(), command);
             return this;
         }
 
         private void injectHolders(Object target) {
+            if (target instanceof ApplicationStateAware) {
+                ((ApplicationStateAware) target).setApplicationState(state);
+            }
             if (target instanceof VariableHolderAware) {
                 ((VariableHolderAware) target).setVariableHolder(variableHolder);
             }
@@ -103,42 +106,25 @@ public class Application {
 
         public Application build() {
             addDefaultCommands();
+            this.commandHolder = new CommandHolder(commands);
+
+            Properties applicationProperties = PropertyUtils.readFromFile(propertiesPath);
+            this.variableHolder = new VariableHolder(applicationProperties);
+            this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandHolder, variableHolder);
+
+            injectHolders(state);
+            commands.values().forEach(this::injectHolders);
             return new Application(commands, applicationProperties);
         }
 
         private void addDefaultCommands() {
-            addCommand("help", new HelpCommand(infoPrinter));
-            addCommand("greet", new GreetingCommand(infoPrinter));
-            addCommand("exit", new ExitCommand());
-            addCommand("set", new SetVariableCommand());
-            addCommand("get", new GetVariableCommand());
+            addCommand(new HelpCommand(infoPrinter));
+            addCommand(new GreetingCommand(infoPrinter));
+            addCommand(new ExitCommand());
+            addCommand(new SetVariableCommand());
+            addCommand(new GetVariableCommand());
         }
 
-        private Properties getProperties(String propertiesPath) {
-            Properties properties = new Properties();
-
-            properties.setProperty("command.help.name", "help");
-            properties.setProperty("command.help.description", "Prints all commands with arity and description");
-
-            properties.setProperty("command.greet.name", "greet");
-            properties.setProperty("command.greet.description", "Prints greetings");
-
-            properties.setProperty("command.get.name", "get");
-            properties.setProperty("command.get.options", "var,precision");
-            properties.setProperty("command.get.description", "Returns value of variable with supplied name. Example: get variable-name");
-            properties.setProperty("command.get.constraint-violation-message", "Command requires 1 argument: the name of variable to get");
-
-            properties.setProperty("command.set.name", "set");
-            properties.setProperty("command.set.options", "var");
-            properties.setProperty("command.set.description", "Invokes setting variable mechanism. Example: set variable-name");
-            properties.setProperty("command.set.constraint-violation-message", "Command requires 1 argument: the name of variable to be set");
-
-            properties.setProperty("command.exit.name", "exit");
-            properties.setProperty("command.exit.description", "Interrupt all work and exit without saving results");
-
-            PropertyUtils.readFromFile(propertiesPath, properties);
-            return properties;
-        }
     }
 
 }

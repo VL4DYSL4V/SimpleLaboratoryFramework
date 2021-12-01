@@ -3,7 +3,6 @@ package framework.command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import framework.command.entity.Command;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
 import framework.utils.ConsoleUtils;
@@ -17,8 +16,11 @@ import org.apache.commons.math3.geometry.euclidean.oned.Interval;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Setter
 public class GetVariableCommand extends AbstractRunnableCommand
@@ -46,9 +48,30 @@ public class GetVariableCommand extends AbstractRunnableCommand
         }
     }
 
+    @Nonnull
+    @Override
+    public String getDescription() {
+        return "Returns value of variable with supplied name. Example: get variable-name";
+    }
+
+    @Nonnull
+    @Override
+    public Set<String> getOptions() {
+        Set<String> options = new HashSet<>();
+        options.add("var");
+        options.add("precision");
+        return options;
+    }
+
+    @Nonnull
+    @Override
+    public String getConstraintViolationMessage() {
+        return "Command requires 1 argument: the name of variable to get";
+    }
+
     private boolean assertVariableIsKnown(String variableName) {
         if (variableName == null) {
-            Command runnableCommand = commandHolder.getCommand("get");
+            NamedCommand runnableCommand = commandHolder.getCommand("get");
             ConsoleUtils.println(runnableCommand.getConstraintViolationMessage());
             return false;
         }

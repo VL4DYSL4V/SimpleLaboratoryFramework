@@ -1,6 +1,6 @@
 package framework.application.info;
 
-import framework.command.entity.Command;
+import framework.command.NamedCommand;
 import framework.command.holder.CommandHolder;
 import framework.enums.PropertyName;
 import framework.enums.VariableType;
@@ -120,10 +120,10 @@ public class ApplicationInfoPrinter {
      * Appends 'commands' part and adds line separator character to the end
      */
     private void appendCommandsPart(StringBuilder destination, CommandHolder commandHolder) {
-        Map<String, Command> commands = commandHolder.getCommands();
+        Map<String, ? extends NamedCommand> commands = commandHolder.getCommands();
         destination.append(String.format("Commands:%n"));
         commands.values().stream()
-                .sorted(Comparator.comparing(Command::getName))
+                .sorted(Comparator.comparing(NamedCommand::getName))
                 .forEach(e -> {
                     destination.append(String.format("* %s:%n", e.getName()));
                     destination.append(String.format("\tDescription: %s%n", e.getDescription()));
