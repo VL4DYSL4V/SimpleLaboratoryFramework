@@ -14,6 +14,7 @@ import framework.variable.holder.VariableHolder;
 import framework.variable.holder.VariableHolderAware;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,14 +39,18 @@ public class Application {
     }
 
     private void listenForTheInput() {
-        String input = ConsoleUtils.readLine().trim();
-        if (!input.isEmpty()) {
-            String[] parts = input.split("\\s+");
-            if (parts.length > 0) {
-                String[] args = new String[parts.length - 1];
-                System.arraycopy(parts, 1, args, 0, args.length);
-                executeCommand(parts[0], args);
+        try {
+            String input = ConsoleUtils.readLine().trim();
+            if (!input.isEmpty()) {
+                String[] parts = input.split("\\s+");
+                if (parts.length > 0) {
+                    String[] args = new String[parts.length - 1];
+                    System.arraycopy(parts, 1, args, 0, args.length);
+                    executeCommand(parts[0], args);
+                }
             }
+        } catch (NoSuchElementException ignored) {
+            // Just continue listening
         }
     }
 
@@ -68,12 +73,6 @@ public class Application {
 
         private final Map<String, RunnableCommand> commands = new ConcurrentHashMap<>();
 
-        private VariableHolder variableHolder;
-
-        private CommandHolder commandHolder;
-
-        private ApplicationInfoPrinter infoPrinter;
-
         public ApplicationBuilder(ApplicationState state) throws LaboratoryFrameworkException {
             this(DEFAULT_PROPERTY_PATH_STRING, state);
         }
@@ -92,7 +91,8 @@ public class Application {
             return this;
         }
 
-        private void injectHolders(Object target) {
+        private void injectHolders(Object target, ApplicationState state, VariableHolder variableHolder,
+                                   CommandHolder commandHolder) {
             if (target instanceof ApplicationStateAware) {
                 ((ApplicationStateAware) target).setApplicationState(state);
             }
@@ -105,19 +105,20 @@ public class Application {
         }
 
         public Application build() {
-            addDefaultCommands();
-            this.commandHolder = new CommandHolder(commands);
-
             Properties applicationProperties = PropertyUtils.readFromFile(propertiesPath);
-            this.variableHolder = new VariableHolder(applicationProperties);
-            this.infoPrinter = new ApplicationInfoPrinter(applicationProperties, commandHolder, variableHolder);
+            final VariableHolder variableHolder = new VariableHolder(applicationProperties);
+            ApplicationInfoPrinter infoPrinter = new ApplicationInfoPrinter(applicationProperties);
 
-            injectHolders(state);
-            commands.values().forEach(this::injectHolders);
+            addDefaultCommands(infoPrinter);
+            final CommandHolder commandHolder = new CommandHolder(commands);
+
+            injectHolders(state, state, variableHolder, commandHolder);
+            injectHolders(infoPrinter, state, variableHolder, commandHolder);
+            commands.values().forEach(e -> injectHolders(e, state, variableHolder, commandHolder));
             return new Application(commands, applicationProperties);
         }
 
-        private void addDefaultCommands() {
+        private void addDefaultCommands(ApplicationInfoPrinter infoPrinter) {
             addCommand(new HelpCommand(infoPrinter));
             addCommand(new GreetingCommand(infoPrinter));
             addCommand(new ExitCommand());

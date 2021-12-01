@@ -2,6 +2,7 @@ package framework.application.info;
 
 import framework.command.NamedCommand;
 import framework.command.holder.CommandHolder;
+import framework.command.holder.CommandHolderAware;
 import framework.enums.PropertyName;
 import framework.enums.VariableType;
 import framework.exception.LaboratoryFrameworkException;
@@ -11,6 +12,8 @@ import framework.variable.entity.MatrixVariable;
 import framework.variable.entity.Variable;
 import framework.variable.entity.VectorVariable;
 import framework.variable.holder.VariableHolder;
+import framework.variable.holder.VariableHolderAware;
+import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -20,18 +23,17 @@ import java.util.Properties;
 /**
  * Class is created to build and print greeting and manual
  */
-public class ApplicationInfoPrinter {
+@Setter
+public class ApplicationInfoPrinter implements CommandHolderAware, VariableHolderAware {
 
     private final String greeting;
 
-    private final CommandHolder commandHolder;
+    private CommandHolder commandHolder;
 
-    private final VariableHolder variableHolder;
+    private VariableHolder variableHolder;
 
-    public ApplicationInfoPrinter(Properties applicationProperties, CommandHolder commandHolder, VariableHolder variableHolder) {
+    public ApplicationInfoPrinter(Properties applicationProperties) {
         this.greeting = buildGreeting(applicationProperties);
-        this.commandHolder = commandHolder;
-        this.variableHolder = variableHolder;
     }
 
     public void printManual() {
